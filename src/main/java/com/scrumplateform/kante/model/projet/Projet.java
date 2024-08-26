@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.scrumplateform.kante.model.cdcTechnique.CdcTechnique;
+import com.scrumplateform.kante.model.client.Client;
 import com.scrumplateform.kante.model.conception.Conception;
 import com.scrumplateform.kante.model.deploiement.Deploiement;
 import com.scrumplateform.kante.model.developpement.SprintDev;
@@ -17,8 +18,6 @@ import com.scrumplateform.kante.model.sprintPlanning.Sprint;
 import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
-
-import ch.qos.logback.core.net.server.Client;
 import lombok.Data;
 
 @Data
@@ -26,6 +25,7 @@ import lombok.Data;
 public class Projet {
     @Id
     private String id;
+    private Utilisateur scrum;
     private Client client;
     private String titre;
     private String description;
