@@ -11,6 +11,7 @@ public class Etape {
     
     private String id;
     private String label;
+    private String icon;
     private int ordre;
 }
 
