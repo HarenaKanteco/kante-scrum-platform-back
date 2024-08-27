@@ -1,6 +1,6 @@
 package com.scrumplateform.kante.model.userStory;
 
-import org.springframework.data.annotation.Id;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @Document(collection = "scenario")
 public class Scenario {
-    @Id
+    
     private String id;
     private String titre;
     private String details;
