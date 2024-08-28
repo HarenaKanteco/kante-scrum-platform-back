@@ -8,6 +8,11 @@ import org.springframework.data.mongodb.repository.Query;
 import com.scrumplateform.kante.model.projet.Projet;
 
 public interface ProjetRepository extends MongoRepository<Projet, String> {
+    @Query("{ 'scrum.id': ?0, 'etape.etape.ordre': ?1 }")
+    Page<Projet> findByScrumIdAndEtapeOrdre(String scrumId, int etapeOrdre, Pageable pageable);
+
+    @Query("{ 'scrum.id': ?0, 'etape.etape.ordre': ?2, $or: [ { 'client.email': { $regex: ?1, $options: 'i' } }, { 'client.entreprise.nom': { $regex: ?1, $options: 'i' } }, { 'titre': { $regex: ?1, $options: 'i' } }, { 'description': { $regex: ?1, $options: 'i' } } ] }")
+    Page<Projet> findByScrumIdAndKeywordAndEtapeOrdre(String scrumId, String keyword, int etapeOrdre, Pageable pageable);
 
     @Query("{ 'scrum.id': ?0 }")
     Page<Projet> findByScrumId(String scrumId, Pageable pageable);

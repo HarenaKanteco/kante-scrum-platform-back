@@ -8,4 +8,5 @@ import lombok.Data;
 @Document(collection = "constante")
 public class Constante {
     Pagination pagination;
+    EtapeConstante etape;
 }
