@@ -20,6 +20,11 @@ public class UtilisateurService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public Utilisateur getUtilisateurById(String utilisateurId) {
+        return utilisateurRepository.findById(utilisateurId)
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé"));
+    }
+
     public Utilisateur register(Utilisateur utilisateur) {
         // Hacher le mot de passe avant de sauvegarder l'utilisateur
         utilisateur.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
