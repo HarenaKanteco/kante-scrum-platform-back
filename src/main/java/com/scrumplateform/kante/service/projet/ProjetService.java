@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
 import com.scrumplateform.kante.model.projet.Projet;
+import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
 import com.scrumplateform.kante.repository.projet.ProjetRepository;
 
@@ -24,6 +25,17 @@ public class ProjetService {
 
     @Autowired
     private ProjetRepository projetRepository;
+
+    public Projet updateTechnique(String projetId, Technique newTechnique) {
+        Projet projet = projetRepository.findById(projetId)
+            .orElseThrow(() -> new ProjectNotFoundException("Projet non trouvé avec l'ID : " + projetId));
+        
+        // Mise à jour de l'attribut 'technique'
+        projet.setTechnique(newTechnique);
+        
+        // Sauvegarder le projet mis à jour
+        return projetRepository.save(projet);
+    }
 
     public Page<UserStory> getPaginatedUserStories(String projetId, int page, int size) {
         // Récupérer le projet par ID

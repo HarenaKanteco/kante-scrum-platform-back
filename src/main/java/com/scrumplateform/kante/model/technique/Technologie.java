@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 @Document(collection = "technologie")
 public class Technologie {
-    
     private String id;
     private TechnologieType type;
     private String label;
