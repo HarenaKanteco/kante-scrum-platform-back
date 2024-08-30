@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scrumplateform.kante.exception.conception.ConceptionNotFoundException;
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
 import com.scrumplateform.kante.http.response.Response;
@@ -38,6 +38,46 @@ public class ProjetController {
 
     @Autowired
     private UtilisateurService utilisateurService;
+
+    @PutMapping("/{projetId}/conceptions/{conceptionId}")
+    public ResponseEntity<Response> updateConceptionInProject(
+            @PathVariable("projetId") String projetId,
+            @PathVariable("conceptionId") String conceptionId,
+            @RequestBody Conception updatedConception) {
+
+        Response response = new Response();
+        try {
+            Projet updatedProjet = projetService.updateConceptionInProject(projetId, conceptionId, updatedConception);
+            response.success(updatedProjet, "Conception modifiée avec succès dans le projet.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException | ConceptionNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la modification de la conception : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{projetId}/conceptions")
+    public ResponseEntity<Response> getPaginatedConceptions(
+            @PathVariable("projetId") String projetId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        Response response = new Response();
+        try {
+            Page<Conception> conceptions = projetService.getPaginatedConceptions(projetId, page, size);
+            response.success(conceptions, "Conceptions récupérées avec succès.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la récupération des conceptions : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("/{projetId}/conceptions")
     public ResponseEntity<Response> addConceptionToProject(
