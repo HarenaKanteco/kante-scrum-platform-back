@@ -13,8 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.scrumplateform.kante.exception.conception.ConceptionNotFoundException;
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
+import com.scrumplateform.kante.model.conception.Conception;
 import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
@@ -25,6 +27,70 @@ public class ProjetService {
 
     @Autowired
     private ProjetRepository projetRepository;
+
+    public Projet updateConceptionInProject(String projetId, String conceptionId, Conception updatedConception) throws ProjectNotFoundException, ConceptionNotFoundException {
+        // Récupérer le projet par ID
+        Projet projet = getProjetById(projetId);
+
+        if (projet == null) {
+            throw new ProjectNotFoundException("Projet avec ID " + projetId + " non trouvé.");
+        }
+
+        // Récupérer la liste des conceptions du projet
+        List<Conception> conceptions = projet.getConceptions();
+
+        // Trouver la conception à mettre à jour
+        Conception conceptionToUpdate = conceptions.stream()
+            .filter(conception -> conception.getId().equals(conceptionId))
+            .findFirst()
+            .orElseThrow(() -> new ConceptionNotFoundException("Conception avec ID " + conceptionId + " non trouvée dans le projet."));
+
+        // Mettre à jour les informations de la conception
+        conceptionToUpdate.setTitre(updatedConception.getTitre());
+        conceptionToUpdate.setDescription(updatedConception.getDescription());
+        conceptionToUpdate.setContenu(updatedConception.getContenu());
+
+        // Sauvegarder les modifications dans le projet
+        projetRepository.save(projet);
+
+        return projet;
+    }
+
+    public Page<Conception> getPaginatedConceptions(String projetId, int page, int size) {
+        // Récupérer le projet par ID
+        Projet projet = getProjetById(projetId);
+
+        // Vérifier si la liste des conceptions est vide ou nulle
+        if (projet.getConceptions() == null || projet.getConceptions().isEmpty()) {
+            return new PageImpl<>(new ArrayList<>(), PageRequest.of(page, size), 0);
+        }
+
+        // Créer un objet Pageable pour la pagination
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Calculer les indices de début et de fin pour la sous-liste paginée des Conceptions
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), projet.getConceptions().size());
+
+        // Récupérer la sous-liste paginée des Conceptions
+        List<Conception> paginatedConceptions = projet.getConceptions().subList(start, end);
+
+        // Retourner la page des Conceptions
+        return new PageImpl<>(paginatedConceptions, pageable, projet.getConceptions().size());
+    }
+
+    public Projet addConceptionToProject(String projetId, Conception conception) {
+        Projet projet = getProjetById(projetId);
+
+        conception.setId(UUID.randomUUID().toString());
+
+        if (projet.getConceptions() == null) {
+            projet.setConceptions(new ArrayList<>());
+        }
+
+        projet.getConceptions().add(conception);
+        return projetRepository.save(projet);
+    }
 
     public Projet updateTechnique(String projetId, Technique newTechnique) {
         Projet projet = projetRepository.findById(projetId)
