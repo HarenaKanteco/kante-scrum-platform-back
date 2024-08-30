@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
 import com.scrumplateform.kante.http.response.Response;
+import com.scrumplateform.kante.model.conception.Conception;
 import com.scrumplateform.kante.model.projet.Projet;
+import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 import com.scrumplateform.kante.service.etape.EtapeService;
@@ -36,6 +38,44 @@ public class ProjetController {
 
     @Autowired
     private UtilisateurService utilisateurService;
+
+    @PostMapping("/{projetId}/conceptions")
+    public ResponseEntity<Response> addConceptionToProject(
+            @PathVariable("projetId") String projetId,
+            @RequestBody Conception conception) {
+
+        Response response = new Response();
+        try {
+            Projet updatedProjet = projetService.addConceptionToProject(projetId, conception);
+            response.success(updatedProjet, "Conception ajoutée avec succès au projet.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de l'ajout de la conception : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{projetId}/technics")
+    public ResponseEntity<Response> updateTechnique(
+            @PathVariable("projetId") String projetId,
+            @RequestBody Technique newTechnique) {
+
+        Response response = new Response();
+        try {
+            Projet updatedProjet = projetService.updateTechnique(projetId, newTechnique);
+            response.success(updatedProjet, "Technique du projet mise à jour avec succès.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            response.error(null, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la mise à jour de la technique du projet : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PutMapping("/{projetId}/valider-etape")
     public ResponseEntity<Response> validerEtape(
