@@ -18,7 +18,7 @@ import com.scrumplateform.kante.repository.etape.EtapeRepository;
 import com.scrumplateform.kante.repository.projet.ProjetRepository;
 
 @Service
-public class EtapeService {
+public class EtapeService implements EtapeServiceImpl {
 
     @Autowired
     private ProjetRepository projetRepository;
@@ -26,6 +26,7 @@ public class EtapeService {
     @Autowired
     private EtapeRepository etapeRepository;
 
+    @Override
     @Transactional
     public Projet validerEtape(String projetId, Utilisateur utilisateurConnecte, int ordreActuel, int ordreSuivant) {
         // Récupérer le projet par son ID

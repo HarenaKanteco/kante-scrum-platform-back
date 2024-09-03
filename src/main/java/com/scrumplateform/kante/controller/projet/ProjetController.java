@@ -1,5 +1,7 @@
 package com.scrumplateform.kante.controller.projet;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,25 +21,46 @@ import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
 import com.scrumplateform.kante.http.response.Response;
 import com.scrumplateform.kante.model.conception.Conception;
 import com.scrumplateform.kante.model.projet.Projet;
+import com.scrumplateform.kante.model.projet.ProjetProjection;
+import com.scrumplateform.kante.model.sprintPlanning.Sprint;
 import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
-import com.scrumplateform.kante.service.etape.EtapeService;
-import com.scrumplateform.kante.service.projet.ProjetService;
-import com.scrumplateform.kante.service.utilisateur.UtilisateurService;
+import com.scrumplateform.kante.service.etape.EtapeServiceImpl;
+import com.scrumplateform.kante.service.projet.ProjetServiceImpl;
+import com.scrumplateform.kante.service.utilisateur.UtilisateurServiceImpl;
 
 @RestController
 @RequestMapping("/api/v1/projets")
 public class ProjetController {
 
     @Autowired
-    private ProjetService projetService;
+    private ProjetServiceImpl projetService;
 
     @Autowired
-    private EtapeService etapeService;
+    private EtapeServiceImpl etapeService;
 
     @Autowired
-    private UtilisateurService utilisateurService;
+    private UtilisateurServiceImpl utilisateurService;
+
+    @PutMapping("/{projetId}/sprints")
+    public ResponseEntity<Response> updateSprintsInProject(
+            @PathVariable("projetId") String projetId,
+            @RequestBody List<Sprint> updatedSprints) {
+
+        Response response = new Response();
+        try {
+            Projet updatedProjet = projetService.updateSprintsInProject(projetId, updatedSprints);
+            response.success(updatedProjet, "Sprints mis à jour avec succès dans le projet.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la mise à jour des sprints : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PutMapping("/{projetId}/conceptions/{conceptionId}")
     public ResponseEntity<Response> updateConceptionInProject(
@@ -252,7 +275,7 @@ public class ProjetController {
 
         Response response = new Response();
         try {
-            Page<Projet> projects = projetService.getPaginatedProjects(scrumId, keyword, page, size);
+            Page<ProjetProjection> projects = projetService.getPaginatedProjects(scrumId, keyword, page, size);
             
             // Create a success response in French
             response.success(projects, "Projets récupérés avec succès.");
