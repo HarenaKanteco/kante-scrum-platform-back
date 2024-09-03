@@ -18,16 +18,36 @@ import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
 import com.scrumplateform.kante.model.conception.Conception;
 import com.scrumplateform.kante.model.projet.Projet;
+import com.scrumplateform.kante.model.projet.ProjetProjection;
+import com.scrumplateform.kante.model.sprintPlanning.Sprint;
 import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
 import com.scrumplateform.kante.repository.projet.ProjetRepository;
 
 @Service
-public class ProjetService {
+public class ProjetService implements ProjetServiceImpl {
 
     @Autowired
     private ProjetRepository projetRepository;
 
+    @Override
+    public Projet updateSprintsInProject(String projetId, List<Sprint> updatedSprints) throws ProjectNotFoundException {
+        Optional<Projet> optionalProjet = projetRepository.findById(projetId);
+        
+        if (optionalProjet.isEmpty()) {
+            throw new ProjectNotFoundException("Projet non trouvé pour l'id : " + projetId);
+        }
+
+        Projet projet = optionalProjet.get();
+
+        // Remplacer la liste existante des sprints par la nouvelle liste
+        projet.setSprints(updatedSprints);
+
+        // Sauvegarder le projet mis à jour dans la base de données
+        return projetRepository.save(projet);
+    }
+
+    @Override
     public Projet updateConceptionInProject(String projetId, String conceptionId, Conception updatedConception) throws ProjectNotFoundException, ConceptionNotFoundException {
         // Récupérer le projet par ID
         Projet projet = getProjetById(projetId);
@@ -56,6 +76,7 @@ public class ProjetService {
         return projet;
     }
 
+    @Override
     public Page<Conception> getPaginatedConceptions(String projetId, int page, int size) {
         // Récupérer le projet par ID
         Projet projet = getProjetById(projetId);
@@ -79,6 +100,7 @@ public class ProjetService {
         return new PageImpl<>(paginatedConceptions, pageable, projet.getConceptions().size());
     }
 
+    @Override
     public Projet addConceptionToProject(String projetId, Conception conception) {
         Projet projet = getProjetById(projetId);
 
@@ -92,6 +114,7 @@ public class ProjetService {
         return projetRepository.save(projet);
     }
 
+    @Override
     public Projet updateTechnique(String projetId, Technique newTechnique) {
         Projet projet = projetRepository.findById(projetId)
             .orElseThrow(() -> new ProjectNotFoundException("Projet non trouvé avec l'ID : " + projetId));
@@ -103,6 +126,7 @@ public class ProjetService {
         return projetRepository.save(projet);
     }
 
+    @Override
     public Page<UserStory> getPaginatedUserStories(String projetId, int page, int size) {
         // Récupérer le projet par ID
         Projet projet = getProjetById(projetId);
@@ -123,6 +147,7 @@ public class ProjetService {
         return new PageImpl<>(paginatedUserStories, pageable, projet.getUserStories().size());
     }
 
+    @Override
     public Projet updateUserStoryInProject(String projetId, String userStoryId, UserStory updatedUserStory) {
         Projet projet = getProjetById(projetId);
     
@@ -148,6 +173,7 @@ public class ProjetService {
         return projetRepository.save(projet);
     }    
 
+    @Override
     public Projet addUserStoryToProject(String projetId, UserStory userStory) {
         Projet projet = getProjetById(projetId);
 
@@ -161,11 +187,13 @@ public class ProjetService {
         return projetRepository.save(projet);
     }
 
+    @Override
     public Projet getProjetById(String projetId) {
         return projetRepository.findById(projetId)
                 .orElseThrow(() -> new ProjectNotFoundException("Projet avec ID " + projetId + " n'existe pas."));
         }
 
+    @Override
     public Page<Projet> getPaginatedProjects(String scrumId, String keyword, int etapeOrdre, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateCreation"));
 
@@ -178,7 +206,8 @@ public class ProjetService {
         }
     }
 
-    public Page<Projet> getPaginatedProjects(String scrumId, String keyword, int page, int size) {
+    @Override
+    public Page<ProjetProjection> getPaginatedProjects(String scrumId, String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateCreation"));
 
         // Constructing search criteria

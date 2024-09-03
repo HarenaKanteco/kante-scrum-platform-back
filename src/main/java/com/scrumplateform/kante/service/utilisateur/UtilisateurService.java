@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UtilisateurService {
+public class UtilisateurService implements UtilisateurServiceImpl {
 
     @Autowired
     private UtilisateurRepository utilisateurRepository;
@@ -20,17 +20,20 @@ public class UtilisateurService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Override
     public Utilisateur getUtilisateurById(String utilisateurId) {
         return utilisateurRepository.findById(utilisateurId)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé"));
     }
 
+    @Override
     public Utilisateur register(Utilisateur utilisateur) {
         // Hacher le mot de passe avant de sauvegarder l'utilisateur
         utilisateur.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
         return utilisateurRepository.save(utilisateur);
     }
 
+    @Override
     public Utilisateur login(LoginDTO loginDTO) {
         Optional<Utilisateur> utilisateurOptional = utilisateurRepository.findByEmail(loginDTO.getEmail());
         if (!utilisateurOptional.isPresent()) {
@@ -47,6 +50,7 @@ public class UtilisateurService {
         return utilisateur; // Retourne l'utilisateur authentifié
     }
 
+    @Override
     public Utilisateur authenticate(LoginDTO loginDTO) throws Exception {
         // Find user by email
         Utilisateur utilisateur = utilisateurRepository.findByEmail(loginDTO.getEmail())
