@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 @Document(collection = "cdcTechnique")
 public class CdcTechnique {
-    
     private String id;
     private String contenu;
 }
