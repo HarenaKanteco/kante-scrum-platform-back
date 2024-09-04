@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.scrumplateform.kante.exception.conception.ConceptionNotFoundException;
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
+import com.scrumplateform.kante.model.cdcTechnique.CdcTechnique;
 import com.scrumplateform.kante.model.conception.Conception;
 import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.projet.ProjetProjection;
@@ -30,6 +31,19 @@ public class ProjetService implements ProjetServiceImpl {
 
     @Autowired
     private ProjetRepository projetRepository;
+
+    @Override
+    public Projet updateCdcTechniqueInProject(String projetId, CdcTechnique updatedCdcTechnique) throws ProjectNotFoundException {
+        // Find the projet by id
+        Projet projet = projetRepository.findById(projetId)
+        .orElseThrow(() -> new ProjectNotFoundException("Projet not found with id " + projetId));
+
+        // Update the cdcTechnique attribute
+        projet.setCdcTechnique(updatedCdcTechnique);
+
+        // Save the updated projet back to the database
+        return projetRepository.save(projet);
+    }
 
     @Override
     public Projet updateEquipeInProject(String projetId, List<Utilisateur> updatedEquipe) throws ProjectNotFoundException {
