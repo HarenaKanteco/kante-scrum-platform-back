@@ -50,6 +50,7 @@ public class SecurityConfiguration {
         "/uploads/**"
     };
 
+    @SuppressWarnings("deprecation")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

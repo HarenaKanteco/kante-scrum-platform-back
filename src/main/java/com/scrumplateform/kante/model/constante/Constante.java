@@ -9,4 +9,5 @@ import lombok.Data;
 public class Constante {
     Pagination pagination;
     EtapeConstante etape;
+    DevRole devRole;
 }

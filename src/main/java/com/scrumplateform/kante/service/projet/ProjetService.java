@@ -22,6 +22,7 @@ import com.scrumplateform.kante.model.projet.ProjetProjection;
 import com.scrumplateform.kante.model.sprintPlanning.Sprint;
 import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
+import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 import com.scrumplateform.kante.repository.projet.ProjetRepository;
 
 @Service
@@ -29,6 +30,19 @@ public class ProjetService implements ProjetServiceImpl {
 
     @Autowired
     private ProjetRepository projetRepository;
+
+    @Override
+    public Projet updateEquipeInProject(String projetId, List<Utilisateur> updatedEquipe) throws ProjectNotFoundException {
+        // Find the projet by id
+        Projet projet = projetRepository.findById(projetId)
+            .orElseThrow(() -> new ProjectNotFoundException("Projet not found with id " + projetId));
+
+        // Update the equipe attribute
+        projet.setEquipe(updatedEquipe);
+
+        // Save the updated projet back to the database
+        return projetRepository.save(projet);
+    }
 
     @Override
     public Projet updateSprintsInProject(String projetId, List<Sprint> updatedSprints) throws ProjectNotFoundException {
