@@ -26,6 +26,8 @@ public class Utilisateur {
 
     private EnumSet<Role> roles;
 
+    private String currentRole;
+
     private Date dateModification;
 
     private String photoUrl;
