@@ -21,6 +21,7 @@ import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
 import com.scrumplateform.kante.http.response.Response;
 import com.scrumplateform.kante.model.cdcTechnique.CdcTechnique;
 import com.scrumplateform.kante.model.conception.Conception;
+import com.scrumplateform.kante.model.developpement.SprintDev;
 import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.projet.ProjetProjection;
 import com.scrumplateform.kante.model.sprintPlanning.Sprint;
@@ -43,6 +44,25 @@ public class ProjetController {
 
     @Autowired
     private UtilisateurServiceImpl utilisateurService;
+
+    @PutMapping("/{projetId}/sprint-devs")
+    public ResponseEntity<Response> updateSprintDevsInProject(
+            @PathVariable("projetId") String projetId,
+            @RequestBody List<SprintDev> updatedSprintDevs) {
+
+        Response response = new Response();
+        try {
+            Projet updatedProjet = projetService.updateSprintDevsInProject(projetId, updatedSprintDevs);
+            response.success(updatedProjet, "Sprints developpements mis à jour avec succès dans le projet.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la mise à jour des sprints developpements : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PutMapping("/{projetId}/cdc-techniques")
     public ResponseEntity<Response> updateCdcTechnique(

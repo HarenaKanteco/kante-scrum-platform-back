@@ -10,4 +10,5 @@ public class Constante {
     Pagination pagination;
     EtapeConstante etape;
     DevRole devRole;
+    int etapeFinale;
 }
