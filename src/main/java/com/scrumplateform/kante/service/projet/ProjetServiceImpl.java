@@ -8,6 +8,7 @@ import com.scrumplateform.kante.exception.conception.ConceptionNotFoundException
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.model.cdcTechnique.CdcTechnique;
 import com.scrumplateform.kante.model.conception.Conception;
+import com.scrumplateform.kante.model.developpement.SprintDev;
 import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.projet.ProjetProjection;
 import com.scrumplateform.kante.model.sprintPlanning.Sprint;
@@ -17,6 +18,7 @@ import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 
 @Service
 public interface ProjetServiceImpl {
+    public Projet updateSprintDevsInProject(String projetId, List<SprintDev> updatedSprintDevs) throws ProjectNotFoundException;
     public Projet updateCdcTechniqueInProject(String projetId, CdcTechnique updatedCdcTechnique) throws ProjectNotFoundException;
     public Projet updateEquipeInProject(String projetId, List<Utilisateur> updatedEquipe) throws ProjectNotFoundException;
     public Projet updateSprintsInProject(String projetId, List<Sprint> updatedSprints) throws ProjectNotFoundException;

@@ -10,12 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.scrumplateform.kante.exception.etape.EtapeNotFoundException;
 import com.scrumplateform.kante.exception.etape.EtapeProjetNotFoundException;
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
+import com.scrumplateform.kante.model.constante.Constante;
 import com.scrumplateform.kante.model.etape.Etape;
 import com.scrumplateform.kante.model.etape.EtapeProjet;
 import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 import com.scrumplateform.kante.repository.etape.EtapeRepository;
 import com.scrumplateform.kante.repository.projet.ProjetRepository;
+import com.scrumplateform.kante.service.constante.ConstanteService;
 
 @Service
 public class EtapeService implements EtapeServiceImpl {
@@ -25,6 +27,9 @@ public class EtapeService implements EtapeServiceImpl {
 
     @Autowired
     private EtapeRepository etapeRepository;
+
+    @Autowired
+    private ConstanteService constanteService;
 
     @Override
     @Transactional
@@ -61,12 +66,16 @@ public class EtapeService implements EtapeServiceImpl {
             throw new EtapeProjetNotFoundException("Étape avec ordre " + ordreActuel + " non trouvée dans les étapes du projet");
         }
 
+        Constante constante = constanteService.getConstante();
+
         // Ajouter l'étape suivante à la liste des étapes du projet
-        EtapeProjet nouvelleEtape = new EtapeProjet();
-        nouvelleEtape.setEtape(etapeSuivante);
-        nouvelleEtape.setUtilisateur(null);
-        nouvelleEtape.setDateValidation(null);
-        projet.getEtapes().add(nouvelleEtape);
+        if(ordreSuivant <= constante.getEtapeFinale()) {
+            EtapeProjet nouvelleEtape = new EtapeProjet();
+            nouvelleEtape.setEtape(etapeSuivante);
+            nouvelleEtape.setUtilisateur(null);
+            nouvelleEtape.setDateValidation(null);
+            projet.getEtapes().add(nouvelleEtape);
+        }
 
         // Sauvegarder les modifications du projet
         return projetRepository.save(projet);

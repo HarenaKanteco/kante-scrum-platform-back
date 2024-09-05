@@ -18,6 +18,7 @@ import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
 import com.scrumplateform.kante.model.cdcTechnique.CdcTechnique;
 import com.scrumplateform.kante.model.conception.Conception;
+import com.scrumplateform.kante.model.developpement.SprintDev;
 import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.projet.ProjetProjection;
 import com.scrumplateform.kante.model.sprintPlanning.Sprint;
@@ -31,6 +32,23 @@ public class ProjetService implements ProjetServiceImpl {
 
     @Autowired
     private ProjetRepository projetRepository;
+
+    @Override
+    public Projet updateSprintDevsInProject(String projetId, List<SprintDev> updatedSprintDevs) throws ProjectNotFoundException {
+        Optional<Projet> optionalProjet = projetRepository.findById(projetId);
+        
+        if (optionalProjet.isEmpty()) {
+            throw new ProjectNotFoundException("Projet non trouvé pour l'id : " + projetId);
+        }
+
+        Projet projet = optionalProjet.get();
+
+        // Remplacer la liste existante des sprints par la nouvelle liste
+        projet.setSprintDevs(updatedSprintDevs);
+
+        // Sauvegarder le projet mis à jour dans la base de données
+        return projetRepository.save(projet);
+    }
 
     @Override
     public Projet updateCdcTechniqueInProject(String projetId, CdcTechnique updatedCdcTechnique) throws ProjectNotFoundException {
