@@ -45,6 +45,28 @@ public class ProjetController {
     @Autowired
     private UtilisateurServiceImpl utilisateurService;
 
+    @GetMapping("/dev/steps")
+    public ResponseEntity<Response> getProjetsParMembreEquipe(
+    @RequestParam("devId") String devId,
+    @RequestParam(value = "keyword", required = false) String keyword,
+    @RequestParam(value = "step", defaultValue = "0") int etapeOrdre,
+    @RequestParam(value = "page", defaultValue = "0") int page,
+    @RequestParam(value = "size", defaultValue = "8") int size) {
+        Response response = new Response();
+        try {
+            // Récupérer la page des projets
+            Page<ProjetProjection> projetsPage = projetService.getProjetsParMembreEquipe(devId, keyword, etapeOrdre, page, size);
+
+            // Créer une réponse de succès
+            response.success(projetsPage, "Projets récupérés avec succès");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            // En cas d'erreur
+            response.error(null, "Erreur lors de la récupération des projets");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PutMapping("/{projetId}/sprint-devs")
     public ResponseEntity<Response> updateSprintDevsInProject(
             @PathVariable("projetId") String projetId,

@@ -32,6 +32,18 @@ public class ProjetService implements ProjetServiceImpl {
 
     @Autowired
     private ProjetRepository projetRepository;
+    
+    @Override
+    public Page<ProjetProjection> getProjetsParMembreEquipe(String utilisateurId, String keyword, int step, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateCreation"));
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return projetRepository.findByEquipeAndEtapeOrdre(utilisateurId, step, pageable);
+        } else {
+            String regex = ".*" + keyword + ".*";
+            return projetRepository.findByEquipeAndKeywordAndEtapeOrdre(utilisateurId, regex, step, pageable);
+        }
+    }
 
     @Override
     public Projet updateSprintDevsInProject(String projetId, List<SprintDev> updatedSprintDevs) throws ProjectNotFoundException {

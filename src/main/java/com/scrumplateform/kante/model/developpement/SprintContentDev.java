@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.scrumplateform.kante.model.sprintCheck.SprintCheck;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 
 import lombok.Data;
@@ -18,5 +19,5 @@ public class SprintContentDev {
     private Date dateDebut;
     private Date dateFin;
     private int ordre;
-    private int status;
+    private SprintCheck status;
 }
