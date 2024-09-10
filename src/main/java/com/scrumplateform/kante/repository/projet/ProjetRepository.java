@@ -12,7 +12,7 @@ public interface ProjetRepository extends MongoRepository<Projet, String> {
     @Query(value = "{'equipe': { $elemMatch: { '_id': ?0 } }, 'etape.etape.ordre': ?1 }", fields = "{ 'id': 1, 'client': 1, 'titre': 1, 'description': 1, 'etape': 1 }")
     Page<ProjetProjection> findByEquipeAndEtapeOrdre(String id, int etapeOrdre, Pageable pageable);
 
-    @Query(value = "{'equipe': { $elemMatch: { '_id': ?0 }, 'etape.etape.ordre': ?2 }, $or: [ { 'client.email': { $regex: ?1, $options: 'i' } }, { 'client.entreprise.nom': { $regex: ?1, $options: 'i' } }, { 'titre': { $regex: ?1, $options: 'i' } }, { 'description': { $regex: ?1, $options: 'i' } } ] }", fields = "{ 'id': 1, 'client': 1, 'titre': 1, 'description': 1, 'etape': 1 }")
+    @Query(value = "{'equipe': { $elemMatch: { '_id': ?0 } }, 'etape.etape.ordre': ?2 , $or: [ { 'client.email': { $regex: ?1, $options: 'i' } }, { 'client.entreprise.nom': { $regex: ?1, $options: 'i' } }, { 'titre': { $regex: ?1, $options: 'i' } }, { 'description': { $regex: ?1, $options: 'i' } } ] }", fields = "{ 'id': 1, 'client': 1, 'titre': 1, 'description': 1, 'etape': 1 }")
     Page<ProjetProjection> findByEquipeAndKeywordAndEtapeOrdre(String id, String keyword, int etapeOrdre, Pageable pageable);
 
     @Query("{ 'scrum.id': ?0, 'etape.etape.ordre': ?1 }")

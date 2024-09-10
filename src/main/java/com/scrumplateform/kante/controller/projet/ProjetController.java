@@ -62,6 +62,7 @@ public class ProjetController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             // En cas d'erreur
+            e.printStackTrace();
             response.error(null, "Erreur lors de la récupération des projets");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
