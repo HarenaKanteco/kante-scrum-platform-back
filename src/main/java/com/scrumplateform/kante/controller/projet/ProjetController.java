@@ -45,6 +45,25 @@ public class ProjetController {
     @Autowired
     private UtilisateurServiceImpl utilisateurService;
 
+    @GetMapping("steps/all")
+    public ResponseEntity<Response> getProjectsWithStep(
+            @RequestParam("scrumId") String scrumId,
+            @RequestParam(value = "step", defaultValue = "1") int etapeOrdre) {
+
+        Response response = new Response();
+        try {
+            List<ProjetProjection> projects = projetService.getProjects(scrumId, etapeOrdre);
+            
+            // Create a success response in French
+            response.success(projects, "Projets récupérés avec succès.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            // Handle any exceptions and create an error response in French
+            response.error(null, "Une erreur est survenue lors de la récupération des projets : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/dev/steps")
     public ResponseEntity<Response> getProjetsParMembreEquipe(
     @RequestParam("devId") String devId,

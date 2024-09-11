@@ -1,6 +1,7 @@
 package com.scrumplateform.kante.controller.statistique;
 
 import com.scrumplateform.kante.http.response.Response;
+import com.scrumplateform.kante.model.statistique.StatistiqueScrum;
 import com.scrumplateform.kante.service.statistique.StatistiqueServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,19 @@ public class StatistiqueProjetController {
 
     @Autowired
     private StatistiqueServiceImpl statistiqueService;
+
+    @GetMapping("/{projetId}/scrums")
+    public ResponseEntity<Response> getAllStatistiques(@PathVariable("projetId") String projetId) {
+        Response response = new Response();
+        try {
+            StatistiqueScrum allStats = statistiqueService.getAllScrumStatistiques(projetId);
+            response.success(allStats, "Toutes les statistiques scrum master récupérées avec succès.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la récupération des statistiques : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/{projetId}/analyse-temporelles")
     public ResponseEntity<Response> getAnalyseTemporelle(@PathVariable("projetId") String projetId) {

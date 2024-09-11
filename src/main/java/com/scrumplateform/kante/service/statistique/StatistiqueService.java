@@ -15,6 +15,7 @@ import com.scrumplateform.kante.model.developpement.SprintContentDev;
 import com.scrumplateform.kante.model.developpement.SprintDev;
 import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.sprintCheck.SprintCheck;
+import com.scrumplateform.kante.model.statistique.StatistiqueScrum;
 import com.scrumplateform.kante.service.projet.ProjetService;
 
 @Service
@@ -22,6 +23,29 @@ public class StatistiqueService implements StatistiqueServiceImpl {
 
     @Autowired
     ProjetService projetService;
+
+    @Override
+    public StatistiqueScrum getAllScrumStatistiques(String projetId) {
+        StatistiqueScrum statistiqueScrum = new StatistiqueScrum();
+
+        // Récupérer les statistiques générales
+        Map<String, Object> statistiquesGenerales = getStatistiquesGenerales(projetId);
+        statistiqueScrum.setStatistiquesGenerales(statistiquesGenerales);
+
+        // Récupérer les statistiques sur les tâches
+        Map<String, Object> statistiquesTaches = getStatistiquesTaches(projetId);
+        statistiqueScrum.setStatistiquesTaches(statistiquesTaches);
+
+        // Récupérer les statistiques de performance
+        Map<String, Object> statistiquesPerformance = getPerformanceStatistiques(projetId);
+        statistiqueScrum.setStatistiquesPerformance(statistiquesPerformance);
+
+        // Récupérer l'analyse temporelle
+        Map<String, Object> analyseTemporelle = getAnalyseTemporelle(projetId);
+        statistiqueScrum.setAnalyseTemporelle(analyseTemporelle);
+
+        return statistiqueScrum;
+    }
 
     @Override
     public Map<String, Object> getAnalyseTemporelle(String projetId) {

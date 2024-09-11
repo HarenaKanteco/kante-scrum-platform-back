@@ -18,6 +18,7 @@ import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 
 @Service
 public interface ProjetServiceImpl {
+    public List<ProjetProjection> getProjects(String scrumId, int etapeOrdre);
     public Page<ProjetProjection> getProjetsParMembreEquipe(String utilisateurId, String keyword, int step, int page, int size);
     public Projet updateSprintDevsInProject(String projetId, List<SprintDev> updatedSprintDevs) throws ProjectNotFoundException;
     public Projet updateCdcTechniqueInProject(String projetId, CdcTechnique updatedCdcTechnique) throws ProjectNotFoundException;
