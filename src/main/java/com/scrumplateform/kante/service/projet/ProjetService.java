@@ -32,6 +32,12 @@ public class ProjetService implements ProjetServiceImpl {
 
     @Autowired
     private ProjetRepository projetRepository;
+
+    @Override
+    public List<ProjetProjection> getProjects(String scrumId, int etapeOrdre) {
+        List<ProjetProjection> projets = projetRepository.findByScrumIdAndEtapeOrdre(scrumId, etapeOrdre, Sort.by(Sort.Direction.ASC, "dateCreation"));
+        return projets;
+    }
     
     @Override
     public Page<ProjetProjection> getProjetsParMembreEquipe(String utilisateurId, String keyword, int step, int page, int size) {
