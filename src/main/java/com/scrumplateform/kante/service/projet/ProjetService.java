@@ -1,6 +1,7 @@
 package com.scrumplateform.kante.service.projet;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,25 +14,97 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.scrumplateform.kante.dto.account.exception.UserNotFoundException;
+import com.scrumplateform.kante.dto.projet.CreateProjetDTO;
+import com.scrumplateform.kante.exception.client.ClientNotFoundException;
 import com.scrumplateform.kante.exception.conception.ConceptionNotFoundException;
+import com.scrumplateform.kante.exception.etape.EtapeNotFoundException;
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
 import com.scrumplateform.kante.model.cdcTechnique.CdcTechnique;
+import com.scrumplateform.kante.model.client.Client;
 import com.scrumplateform.kante.model.conception.Conception;
+import com.scrumplateform.kante.model.constante.Constante;
 import com.scrumplateform.kante.model.developpement.SprintDev;
+import com.scrumplateform.kante.model.etape.Etape;
+import com.scrumplateform.kante.model.etape.EtapeProjet;
 import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.projet.ProjetProjection;
 import com.scrumplateform.kante.model.sprintPlanning.Sprint;
 import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
+import com.scrumplateform.kante.repository.client.ClientRepository;
+import com.scrumplateform.kante.repository.etape.EtapeRepository;
 import com.scrumplateform.kante.repository.projet.ProjetRepository;
+import com.scrumplateform.kante.repository.utilisateur.UtilisateurRepository;
+import com.scrumplateform.kante.security.Role;
+import com.scrumplateform.kante.service.constante.ConstanteService;
 
 @Service
 public class ProjetService implements ProjetServiceImpl {
 
     @Autowired
     private ProjetRepository projetRepository;
+
+    @Autowired
+    private EtapeRepository etapeRepository;
+
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
+
+    @Autowired
+    private ClientRepository clientRepository;
+
+    @Autowired 
+    private ConstanteService constanteService;
+
+    @Override
+    public Projet creerProjet(CreateProjetDTO projetDTO) throws Exception {
+        // 1. Récupérer le scrum (Utilisateur) et le client (Client) à partir de leurs IDs
+        Utilisateur scrum = utilisateurRepository.findById(projetDTO.getScrumId())
+                                .orElseThrow(() -> new UserNotFoundException("Scrum introuvable"));
+
+        if (!scrum.getRoles().contains(Role.SCRUM)) {
+            throw new Exception("L'utilisateur sélectionné n'a pas le rôle SCRUM");
+        }
+
+        Client client = clientRepository.findById(projetDTO.getClientId())
+                                .orElseThrow(() -> new ClientNotFoundException("Client introuvable"));
+
+        // 2. Créer le projet avec les données fournies
+        Projet projet = new Projet();
+        projet.setScrum(scrum);
+        projet.setClient(client);
+        projet.setTitre(projetDTO.getTitre());
+        projet.setDescription(projetDTO.getDescription());
+        projet.setLiens(projetDTO.getLiens());
+        projet.setDateCreation(new Date());
+        projet.setDateLivraisonPrevue(projetDTO.getDateLivraisonPrevue());
+
+        initializeEtape(projet);
+
+        // 5. Enregistrer le projet dans la base de données
+        return projetRepository.save(projet);
+    }
+
+    @Override
+    public void initializeEtape(Projet projet) throws Exception {
+        Constante constante = constanteService.getConstante();
+
+        // 3. Trouver l'étape avec ordre = 1, utilisateur = null, et dateValidation = null
+        Etape etapeInitiale = etapeRepository.findByOrdre(constante.getEtapeInitiale())
+            .orElseThrow(() -> new EtapeNotFoundException("Étape initiale introuvable"));
+        
+        // 4. Enregistrer l'étape projet avec les détails
+        EtapeProjet etapeProjet = new EtapeProjet();
+        etapeProjet.setId(UUID.randomUUID().toString());
+        etapeProjet.setEtape(etapeInitiale);
+        projet.setEtape(etapeProjet);
+
+        projet.setEtapes(new ArrayList<>());
+        projet.getEtapes().add(etapeProjet);
+    }
 
     @Override
     public List<ProjetProjection> getProjects(String scrumId, int etapeOrdre) {

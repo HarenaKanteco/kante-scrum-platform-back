@@ -68,8 +68,12 @@ public class EtapeService implements EtapeServiceImpl {
 
         Constante constante = constanteService.getConstante();
 
+        Optional<EtapeProjet> derniereEtape = projet.getEtapes().stream()
+            .filter(et -> et.getEtape().getOrdre() == constante.getEtapeFinale())
+            .findFirst();
+
         // Ajouter l'étape suivante à la liste des étapes du projet
-        if(ordreSuivant <= constante.getEtapeFinale()) {
+        if(derniereEtape.isPresent() == false) {
             EtapeProjet nouvelleEtape = new EtapeProjet();
             nouvelleEtape.setEtape(etapeSuivante);
             nouvelleEtape.setUtilisateur(null);
