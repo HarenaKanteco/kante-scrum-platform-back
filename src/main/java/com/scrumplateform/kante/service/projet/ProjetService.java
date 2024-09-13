@@ -40,6 +40,7 @@ import com.scrumplateform.kante.repository.projet.ProjetRepository;
 import com.scrumplateform.kante.repository.utilisateur.UtilisateurRepository;
 import com.scrumplateform.kante.security.Role;
 import com.scrumplateform.kante.service.constante.ConstanteService;
+import com.scrumplateform.kante.service.notification.NotificationServiceImpl;
 
 @Service
 public class ProjetService implements ProjetServiceImpl {
@@ -58,6 +59,16 @@ public class ProjetService implements ProjetServiceImpl {
 
     @Autowired 
     private ConstanteService constanteService;
+
+    @Autowired 
+    private NotificationServiceImpl notificationService;
+
+    @Override
+    public void sendProjectAssignationNotification(String idUtilisateur) throws Exception {
+        Constante constante = constanteService.getConstante();
+        String contenu = constante.getNotification().getProjet().getAssignation();
+        notificationService.createNotification(idUtilisateur, contenu);
+    }   
 
     @Override
     public Projet creerProjet(CreateProjetDTO projetDTO) throws Exception {
@@ -85,7 +96,12 @@ public class ProjetService implements ProjetServiceImpl {
         initializeEtape(projet);
 
         // 5. Enregistrer le projet dans la base de données
-        return projetRepository.save(projet);
+        Projet projetSaved = projetRepository.save(projet);
+
+        // 6. Envoi de la notification
+        sendProjectAssignationNotification(scrum.getId());
+
+        return projetSaved;
     }
 
     @Override

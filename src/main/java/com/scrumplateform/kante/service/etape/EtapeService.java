@@ -18,6 +18,7 @@ import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 import com.scrumplateform.kante.repository.etape.EtapeRepository;
 import com.scrumplateform.kante.repository.projet.ProjetRepository;
 import com.scrumplateform.kante.service.constante.ConstanteService;
+import com.scrumplateform.kante.service.projet.ProjetServiceImpl;
 
 @Service
 public class EtapeService implements EtapeServiceImpl {
@@ -31,9 +32,12 @@ public class EtapeService implements EtapeServiceImpl {
     @Autowired
     private ConstanteService constanteService;
 
+    @Autowired 
+    private ProjetServiceImpl projetService;
+
     @Override
     @Transactional
-    public Projet validerEtape(String projetId, Utilisateur utilisateurConnecte, int ordreActuel, int ordreSuivant) {
+    public Projet validerEtape(String projetId, Utilisateur utilisateurConnecte, int ordreActuel, int ordreSuivant) throws Exception {
         // Récupérer le projet par son ID
         Projet projet = projetRepository.findById(projetId)
             .orElseThrow(() -> new ProjectNotFoundException("Projet non trouvé"));
@@ -79,6 +83,12 @@ public class EtapeService implements EtapeServiceImpl {
             nouvelleEtape.setUtilisateur(null);
             nouvelleEtape.setDateValidation(null);
             projet.getEtapes().add(nouvelleEtape);
+        }
+
+        if(etapeSuivante.getOrdre() == constante.getEtapeFinale() && derniereEtape.isPresent() == false) {
+            for (Utilisateur ressource : projet.getEquipe()) {
+                projetService.sendProjectAssignationNotification(ressource.getId());
+            }
         }
 
         // Sauvegarder les modifications du projet
