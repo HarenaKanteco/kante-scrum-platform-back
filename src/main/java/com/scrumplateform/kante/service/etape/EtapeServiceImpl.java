@@ -9,5 +9,5 @@ import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 @Service
 public interface EtapeServiceImpl {
     @Transactional
-    public Projet validerEtape(String projetId, Utilisateur utilisateurConnecte, int ordreActuel, int ordreSuivant);
+    public Projet validerEtape(String projetId, Utilisateur utilisateurConnecte, int ordreActuel, int ordreSuivant) throws Exception;
 }

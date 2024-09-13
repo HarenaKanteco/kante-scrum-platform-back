@@ -19,6 +19,7 @@ import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 
 @Service
 public interface ProjetServiceImpl {
+    public void sendProjectAssignationNotification(String idUtilisateur) throws Exception;
     public Projet creerProjet(CreateProjetDTO projetDTO) throws Exception;
     public void initializeEtape(Projet projet) throws Exception;
     public List<ProjetProjection> getProjects(String scrumId, int etapeOrdre);

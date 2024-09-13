@@ -12,4 +12,5 @@ public class Constante {
     DevRole devRole;
     int etapeInitiale;
     int etapeFinale;
+    NotificationConstante notification;
 }
