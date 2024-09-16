@@ -2,6 +2,7 @@ package com.scrumplateform.kante.service.statistique;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.time.LocalDateTime;
 import java.time.Duration;
@@ -52,6 +53,8 @@ public class StatistiqueService implements StatistiqueServiceImpl {
         Projet projet = projetService.getProjetById(projetId);
 
         List<SprintDev> sprints = projet.getSprintDevs();
+
+        sprints = sprints != null ? sprints : new ArrayList<>();
         
         long totalDuration = 0;
         long totalTasks = 0;
@@ -100,6 +103,8 @@ public class StatistiqueService implements StatistiqueServiceImpl {
     public Map<String, Object> getPerformanceStatistiques(String projetId) {
         Projet projet = projetService.getProjetById(projetId);
         List<SprintDev> sprints = projet.getSprintDevs();
+
+        sprints = sprints != null ? sprints : new ArrayList<>();
         
         int nombreTotalTaches = 0;
         int nombreTachesCompletes = 0;
@@ -156,6 +161,8 @@ public class StatistiqueService implements StatistiqueServiceImpl {
     public Map<String, Object> getStatistiquesTaches(String projetId) {
         Projet projet = projetService.getProjetById(projetId);
         List<SprintDev> sprints = projet.getSprintDevs();
+
+        sprints = sprints != null ? sprints : new ArrayList<>();
 
         int totalTaches = 0;
         int totalTachesCompletes = 0;
@@ -218,20 +225,22 @@ public class StatistiqueService implements StatistiqueServiceImpl {
 
         List<SprintDev> sprints = projet.getSprintDevs();
         
-        int nombreTotalSprints = sprints.size();
+        int nombreTotalSprints = sprints != null ? sprints.size() : 0;
         int nombreTotalTaches = 0;
         int nombreTachesCompletes = 0;
 
         // Parcourir les sprints pour compter les tâches
-        for (SprintDev sprint : sprints) {
-            List<SprintContentDev> sprintContentDevs = sprint.getSprintContentDevs();
-            nombreTotalTaches += sprintContentDevs.size();
-
-            // Compter les tâches terminées (status = 10)
-            for (SprintContentDev task : sprintContentDevs) {
-                SprintCheck status = task.getStatus();
-                if (status != null && status.getStatus() == 10) {
-                    nombreTachesCompletes++;
+        if(sprints != null) {
+            for (SprintDev sprint : sprints) {
+                List<SprintContentDev> sprintContentDevs = sprint.getSprintContentDevs();
+                nombreTotalTaches += sprintContentDevs.size();
+    
+                // Compter les tâches terminées (status = 10)
+                for (SprintContentDev task : sprintContentDevs) {
+                    SprintCheck status = task.getStatus();
+                    if (status != null && status.getStatus() == 10) {
+                        nombreTachesCompletes++;
+                    }
                 }
             }
         }
