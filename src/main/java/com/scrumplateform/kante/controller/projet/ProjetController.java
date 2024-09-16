@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scrumplateform.kante.dto.projet.CreateProjetDTO;
 import com.scrumplateform.kante.exception.conception.ConceptionNotFoundException;
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
@@ -44,6 +45,20 @@ public class ProjetController {
 
     @Autowired
     private UtilisateurServiceImpl utilisateurService;
+
+    @PostMapping
+    public ResponseEntity<Response> creerProjet(@RequestBody CreateProjetDTO projetDTO) {
+        Response response = new Response();
+        try {
+            Projet projetCree = projetService.creerProjet(projetDTO);
+            response.success(projetCree, "Projet créé avec succès");
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.error(null, "Erreur lors de la création du projet: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("steps/all")
     public ResponseEntity<Response> getProjectsWithStep(
