@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scrumplateform.kante.dto.projet.CreateProjetDTO;
 import com.scrumplateform.kante.exception.conception.ConceptionNotFoundException;
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
@@ -44,6 +45,39 @@ public class ProjetController {
 
     @Autowired
     private UtilisateurServiceImpl utilisateurService;
+
+    @PostMapping
+    public ResponseEntity<Response> creerProjet(@RequestBody CreateProjetDTO projetDTO) {
+        Response response = new Response();
+        try {
+            Projet projetCree = projetService.creerProjet(projetDTO);
+            response.success(projetCree, "Projet créé avec succès");
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.error(null, "Erreur lors de la création du projet: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("steps/all")
+    public ResponseEntity<Response> getProjectsWithStep(
+            @RequestParam("scrumId") String scrumId,
+            @RequestParam(value = "step", defaultValue = "1") int etapeOrdre) {
+
+        Response response = new Response();
+        try {
+            List<ProjetProjection> projects = projetService.getProjects(scrumId, etapeOrdre);
+            
+            // Create a success response in French
+            response.success(projects, "Projets récupérés avec succès.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            // Handle any exceptions and create an error response in French
+            response.error(null, "Une erreur est survenue lors de la récupération des projets : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/dev/steps")
     public ResponseEntity<Response> getProjetsParMembreEquipe(

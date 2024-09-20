@@ -1,7 +1,10 @@
 package com.scrumplateform.kante.repository.projet;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -9,6 +12,9 @@ import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.projet.ProjetProjection;
 
 public interface ProjetRepository extends MongoRepository<Projet, String> {
+    @Query("{ 'scrum.id': ?0, 'etape.etape.ordre': ?1 }")
+    List<ProjetProjection> findByScrumIdAndEtapeOrdre(String scrumId, int etapeOrdre, Sort sort);
+
     @Query(value = "{'equipe': { $elemMatch: { '_id': ?0 } }, 'etape.etape.ordre': ?1 }", fields = "{ 'id': 1, 'client': 1, 'titre': 1, 'description': 1, 'etape': 1 }")
     Page<ProjetProjection> findByEquipeAndEtapeOrdre(String id, int etapeOrdre, Pageable pageable);
 

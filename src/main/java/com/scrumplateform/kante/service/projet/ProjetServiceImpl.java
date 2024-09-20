@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.scrumplateform.kante.dto.projet.CreateProjetDTO;
 import com.scrumplateform.kante.exception.conception.ConceptionNotFoundException;
 import com.scrumplateform.kante.exception.projet.ProjectNotFoundException;
 import com.scrumplateform.kante.model.cdcTechnique.CdcTechnique;
@@ -18,6 +19,10 @@ import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 
 @Service
 public interface ProjetServiceImpl {
+    public void sendProjectAssignationNotification(String idUtilisateur) throws Exception;
+    public Projet creerProjet(CreateProjetDTO projetDTO) throws Exception;
+    public void initializeEtape(Projet projet) throws Exception;
+    public List<ProjetProjection> getProjects(String scrumId, int etapeOrdre);
     public Page<ProjetProjection> getProjetsParMembreEquipe(String utilisateurId, String keyword, int step, int page, int size);
     public Projet updateSprintDevsInProject(String projetId, List<SprintDev> updatedSprintDevs) throws ProjectNotFoundException;
     public Projet updateCdcTechniqueInProject(String projetId, CdcTechnique updatedCdcTechnique) throws ProjectNotFoundException;
