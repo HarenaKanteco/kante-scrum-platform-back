@@ -3,11 +3,9 @@ package com.scrumplateform.kante.model.developpement;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 
 @Data
-@Document(collection = "sprintDev")
 public class SprintDev {
     
     private String id;

@@ -12,7 +12,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.scrumplateform.kante.dto.account.exception.UserNotFoundException;
 import com.scrumplateform.kante.dto.projet.CreateProjetDTO;
@@ -41,6 +43,11 @@ import com.scrumplateform.kante.repository.utilisateur.UtilisateurRepository;
 import com.scrumplateform.kante.security.Role;
 import com.scrumplateform.kante.service.constante.ConstanteService;
 import com.scrumplateform.kante.service.notification.NotificationServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 @Service
 public class ProjetService implements ProjetServiceImpl {
@@ -62,6 +69,9 @@ public class ProjetService implements ProjetServiceImpl {
 
     @Autowired 
     private NotificationServiceImpl notificationService;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     public void sendProjectAssignationNotification(String idUtilisateur) throws Exception {
@@ -142,19 +152,19 @@ public class ProjetService implements ProjetServiceImpl {
 
     @Override
     public Projet updateSprintDevsInProject(String projetId, List<SprintDev> updatedSprintDevs) throws ProjectNotFoundException {
-        Optional<Projet> optionalProjet = projetRepository.findById(projetId);
-        
-        if (optionalProjet.isEmpty()) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(projetId));
+
+        Update update = new Update();
+        update.set("sprintDevs", updatedSprintDevs);
+
+        Projet projet = mongoTemplate.findAndModify(query, update, Projet.class);
+
+        if (projet == null) {
             throw new ProjectNotFoundException("Projet non trouvé pour l'id : " + projetId);
         }
 
-        Projet projet = optionalProjet.get();
-
-        // Remplacer la liste existante des sprints par la nouvelle liste
-        projet.setSprintDevs(updatedSprintDevs);
-
-        // Sauvegarder le projet mis à jour dans la base de données
-        return projetRepository.save(projet);
+        return projet;
     }
 
     @Override
