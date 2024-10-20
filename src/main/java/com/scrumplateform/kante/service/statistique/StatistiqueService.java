@@ -48,6 +48,40 @@ public class StatistiqueService implements StatistiqueServiceImpl {
         return statistiqueScrum;
     }
 
+    public Map<String, Long> getTachesParDeveloppeur(String projetId) {
+        Projet projet = projetService.getProjetById(projetId);
+
+        // Initialiser un compteur pour chaque développeur
+        Map<String, Long> repartition = new HashMap<>();
+        
+        // Parcourir chaque SprintDev du projet
+        for (SprintDev sprintDev : projet.getSprintDevs()) {
+            // Pour chaque tâche dans le sprint
+            for (SprintContentDev task : sprintDev.getSprintContentDevs()) {
+                String emailDev = task.getResponsable().getEmail();
+                repartition.put(emailDev, repartition.getOrDefault(emailDev, 0L) + 1); 
+            }
+        }
+
+        return repartition; // Retourner le nombre de tâches par développeur
+    }
+
+    public Map<String, Long> getTachesPondereesParDeveloppeur(String projetId) {
+        Projet projet = projetService.getProjetById(projetId);
+
+        Map<String, Long> repartitionPonderee = new HashMap<>();
+        
+        // Parcourir chaque SprintDev du projet
+        for (SprintDev sprintDev : projet.getSprintDevs()) {
+            for (SprintContentDev task : sprintDev.getSprintContentDevs()) {
+                String emailDev = task.getResponsable().getEmail();
+                repartitionPonderee.put(emailDev, repartitionPonderee.getOrDefault(emailDev, 0L) + task.getDifficulte()); // Ajouter la difficulté à la pondération
+            }
+        }
+
+        return repartitionPonderee; // Retourner le score pondéré par développeur
+    }
+
     @Override
     public Map<String, Object> getAnalyseTemporelle(String projetId) {
         Projet projet = projetService.getProjetById(projetId);

@@ -16,5 +16,6 @@ public class SprintContentDev {
     private Date dateDebut;
     private Date dateFin;
     private int ordre;
+    private int difficulte;
     private SprintCheck status;
 }
