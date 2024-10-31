@@ -13,6 +13,7 @@ public class Technique {
     
     private String id;
     private List<Technologie> technologies;
+    private String autreTechnologies;
     private List<String> materiels;
     private List<String> envDev;
     private String commentaire;
