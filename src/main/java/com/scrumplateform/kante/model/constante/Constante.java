@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.scrumplateform.kante.model.technique.CountRole;
 import com.scrumplateform.kante.model.technique.Technologie;
 
 import lombok.Data;
@@ -18,4 +19,5 @@ public class Constante {
     int etapeFinale;
     NotificationConstante notification;
     List<Technologie> technologies;
+    List<CountRole> countRoles;
 }

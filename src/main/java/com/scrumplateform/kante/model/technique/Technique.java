@@ -17,5 +17,6 @@ public class Technique {
     private List<String> materiels;
     private List<String> envDev;
     private String commentaire;
+    private List<CountRole> countRoles;
 }
 
