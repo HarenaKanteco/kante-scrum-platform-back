@@ -14,8 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.scrumplateform.kante.dto.account.exception.UserNotFoundException;
 import com.scrumplateform.kante.dto.projet.CreateProjetDTO;
 import com.scrumplateform.kante.exception.client.ClientNotFoundException;
@@ -43,9 +41,7 @@ import com.scrumplateform.kante.repository.utilisateur.UtilisateurRepository;
 import com.scrumplateform.kante.security.Role;
 import com.scrumplateform.kante.service.constante.ConstanteService;
 import com.scrumplateform.kante.service.notification.NotificationServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
@@ -72,6 +68,24 @@ public class ProjetService implements ProjetServiceImpl {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Override
+    public SprintDev updateSprintPlanningTasksInProject(String projetId, SprintDev sprintPlanningTasks)
+            throws ProjectNotFoundException {
+        // Find the projet by id
+        Projet projet = projetRepository.findById(projetId)
+        .orElseThrow(() -> new ProjectNotFoundException("Projet not found with id " + projetId));
+
+        // Update the cdcTechnique attribute
+        projet.setSprintPlanningTasks(sprintPlanningTasks);
+
+        // Save the updated projet back to the database
+        projetRepository.save(projet);
+
+        // System.out.println(projet.getSprintPlanningTasks());
+
+        return sprintPlanningTasks;
+    }
 
     @Override
     public void sendProjectAssignationNotification(String idUtilisateur) throws Exception {

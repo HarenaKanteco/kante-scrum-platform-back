@@ -46,6 +46,25 @@ public class ProjetController {
     @Autowired
     private UtilisateurServiceImpl utilisateurService;
 
+    @PutMapping("/{projetId}/sprint-planning-tasks")
+    public ResponseEntity<Response> updateSprintPlanningTasksInProject(
+            @PathVariable("projetId") String projetId,
+            @RequestBody SprintDev sprintPlanningTasks) {
+
+        Response response = new Response();
+        try {
+            SprintDev updatedSprintPlanningTasks = projetService.updateSprintPlanningTasksInProject(projetId, sprintPlanningTasks);
+            response.success(updatedSprintPlanningTasks, "Sprint Planning Tasks developpements mis à jour avec succès dans le projet.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la mise à jour des sprints developpements : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<Response> creerProjet(@RequestBody CreateProjetDTO projetDTO) {
         Response response = new Response();

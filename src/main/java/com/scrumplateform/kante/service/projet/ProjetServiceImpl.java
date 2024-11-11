@@ -19,6 +19,7 @@ import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 
 @Service
 public interface ProjetServiceImpl {
+    public SprintDev updateSprintPlanningTasksInProject(String projetId, SprintDev sprintPlanningTasks) throws ProjectNotFoundException;
     public void sendProjectAssignationNotification(String idUtilisateur) throws Exception;
     public Projet creerProjet(CreateProjetDTO projetDTO) throws Exception;
     public void initializeEtape(Projet projet) throws Exception;

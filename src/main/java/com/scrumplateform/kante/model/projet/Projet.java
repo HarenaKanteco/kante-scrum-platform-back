@@ -42,6 +42,7 @@ public class Projet {
     private List<Conception> conceptions;
     private List<Sprint> sprints;
     private CdcTechnique cdcTechnique;
+    private SprintDev sprintPlanningTasks;
     private List<SprintDev> sprintDevs;
     private List<Deploiement> deploiements;
     private Feedback feedback;

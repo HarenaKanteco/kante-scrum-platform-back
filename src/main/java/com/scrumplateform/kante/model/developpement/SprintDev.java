@@ -14,5 +14,6 @@ public class SprintDev {
     private Date dateCreation;
     private Date dateDebut;
     private Date dateFin;
+    private int typeColonne;
 }
 

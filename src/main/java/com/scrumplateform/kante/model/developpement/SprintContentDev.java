@@ -18,4 +18,5 @@ public class SprintContentDev {
     private int ordre;
     private int difficulte;
     private SprintCheck status;
+    private int priorite;
 }

@@ -20,4 +20,6 @@ public class Constante {
     NotificationConstante notification;
     List<Technologie> technologies;
     List<CountRole> countRoles;
+    Template template;
+    Developpement developpement;
 }
