@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title th:text="${title}">Kante Co Admin</title>
+
+    <!-- Custom fonts for this template-->
+    <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+    <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
+    <link th:href="@{/css/login.css}" rel="stylesheet">
+
+    <!-- Importation des icônes Bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+</head>
+
+<body class="login">
+
+<div th:fragment="admin-login"></div>
+<div class="container">
+
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+        <div class="col-xl-10 col-lg-12 col-md-9">
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                        <div class="col-lg-6 d-none d-lg-block bg-login-image">
+                            <img class="img-fluid" th:src="@{/img/kanteCo.png}" alt="Kante Co logo">
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1 class="h4 text-gray-900 mb-4">Bienvenue !</h1>
+                                </div>
+                                <form class="user" th:action="@{/admin/process-login}" method="post">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail">Adresse Email</label>
+                                        <input type="email" class="form-control form-control-user" id="exampleInputEmail"
+                                            aria-describedby="emailHelp" placeholder="Entrez l'adresse email..."
+                                            required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                            oninvalid="this.setCustomValidity('Veuillez entrer une adresse email valide.')"
+                                            oninput="this.setCustomValidity('')"
+                                            name="username">
+                                        <!-- <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger mt-3" style="font-size: 0.8em;"></div> -->
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword">Mot de passe</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Mot de passe" required minlength="4" oninvalid="this.setCustomValidity('Le mot de passe doit contenir au moins 4 caractères.')" oninput="this.setCustomValidity('')" name="password">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" onclick="togglePasswordVisibility('exampleInputPassword', 'togglePasswordIcon')">
+                                                    <i id="togglePasswordIcon" class="bi bi-eye-fill"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger mt-3" style="font-size: 0.8em;"></div> -->
+                                    </div>
+                                    <div th:if="${param.error}" class="text-danger mt-3" style="font-size: 0.8em;">
+                                        Login ou mot de passe incorrects.
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="custom-control custom-checkbox small">
+                                            <input type="checkbox" class="custom-control-input" id="customCheck">
+                                            <label class="custom-control-label" for="customCheck">Se souvenir de moi</label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">Connexion</button>
+                                </form>
+                                <hr>
+                                <div class="text-center">
+                                    <a class="small" th:href="@{/admin/forgot-password}">Mot de passe oublié ?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Chargement...</span>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<!-- <script src="../../static/assets/bootstrap/vendor/jquery/jquery.min.js"></script>
+<script src="../../static/assets/bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+
+<!-- Core plugin JavaScript-->
+<!-- <script src="../../static/assets/bootstrap/vendor/jquery-easing/jquery.easing.min.js"></script> -->
+
+<!-- Custom scripts for all pages-->
+<!-- <script src="../../static/assets/bootstrap/js/sb-admin-2.min.js"></script> -->
+
+<script>
+    // document.querySelector('form.user').addEventListener('submit', function(event) {
+    //     event.preventDefault();
+    //     const form = event.target;
+    //     const formData = new FormData(form);
+    //     console.log("form.action ",form.action);
+    //     console.log("form.method ",form.method);
+    //     const loadingSpinner = document.querySelector('.loading-spinner');
+        
+    //     loadingSpinner.style.display = 'block';
+
+    //     fetch(form.action, {
+    //         method: form.method,
+    //         headers: {
+    //             'Content-Type': 'application/x-www-form-urlencoded'
+    //         },
+    //         body: new URLSearchParams(formData)
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         loadingSpinner.style.display = 'none';
+    //         let errorMessage = document.querySelector('.text-danger');
+    //         if (!errorMessage) {
+    //             errorMessage = document.createElement('div');
+    //             errorMessage.className = 'text-danger mt-3';
+    //             errorMessage.style.fontSize = '1.0em';
+    //             form.appendChild(errorMessage);
+    //         }
+    //         if (data.success) {
+    //             localStorage.setItem('authToken', data.token);
+    //             window.location.href = '/admin/students';
+    //         } else {
+    //             errorMessage.innerText = data.message;
+    //         }
+    //     })
+    //     .catch(error => {
+    //         loadingSpinner.style.display = 'none';
+    //         console.error('Erreur:', error);
+    //         alert('Erreur de connexion');
+    //     });
+    // });
+
+    function togglePasswordVisibility(passwordFieldId, iconId) {
+        var passwordField = document.getElementById(passwordFieldId);
+        var icon = document.getElementById(iconId);
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            icon.classList.remove('bi-eye-fill');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            passwordField.type = "password";
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye-fill');
+        }
+    }
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template Design Email</title>
+    
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+        sans-serif;
+    }
+
+    .main {
+      width: 100%;
+      min-height: 100%;
+      background: #f1f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-block: 3rem;
+      padding: 2%;
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    .content {
+      max-width: 750px;
+      background: white;
+      border-top: 6px solid #39aec1;
+      padding: 2.5rem;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #707070;
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 1rem;
+      line-height: normal;
+      color: #707070;
+    }
+
+    .text {
+      margin-bottom: 2.5rem;
+    }
+
+    .btn {
+      text-align: center;
+    }
+
+    .btn > a {
+      background: #39aec1;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 18px;
+      transition: background 0.3s;
+      display: inline-block;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .btn > a:hover {
+      background: #3194a3;
+    }
+
+    .social-network {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer {
+      text-align: center;
+    }
+
+    .footer > a {
+      color: #39aec1;
+    }
+  </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="container">
+        <div>
+          <img src='data:image/svg+xml;base64,PHN2Zw0KICAgICAgICAgICAgaWQ9IkNhbHF1ZV8xIg0KICAgICAgICAgICAgZGF0YS1uYW1lPSJDYWxxdWUgMSINCiAgICAgICAgICAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyINCiAgICAgICAgICAgIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIg0KICAgICAgICAgICAgd2lkdGg9IjI2MCINCiAgICAgICAgICAgIGhlaWdodD0iNTQuNzgzIg0KICAgICAgICAgICAgdmlld0JveD0iMCAwIDI2MCA1NC43ODMiDQogICAgICAgICAgPg0KICAgICAgICAgICAgPGRlZnM+DQogICAgICAgICAgICAgIDxsaW5lYXJHcmFkaWVudA0KICAgICAgICAgICAgICAgIGlkPSJsaW5lYXItZ3JhZGllbnQiDQogICAgICAgICAgICAgICAgeDE9IjAuNjk4Ig0KICAgICAgICAgICAgICAgIHkxPSIwLjM3OCINCiAgICAgICAgICAgICAgICB4Mj0iLTAuMDUxIg0KICAgICAgICAgICAgICAgIHkyPSIwLjgyNiINCiAgICAgICAgICAgICAgICBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCINCiAgICAgICAgICAgICAgPg0KICAgICAgICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ZmZiIgc3RvcC1vcGFjaXR5PSIwIiAvPg0KICAgICAgICAgICAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzFkMWQxYiIgLz4NCiAgICAgICAgICAgICAgPC9saW5lYXJHcmFkaWVudD4NCiAgICAgICAgICAgICAgPGxpbmVhckdyYWRpZW50DQogICAgICAgICAgICAgICAgaWQ9ImxpbmVhci1ncmFkaWVudC0yIg0KICAgICAgICAgICAgICAgIHgxPSItMTQ1LjM1OSINCiAgICAgICAgICAgICAgICB5MT0iLTIyLjgwOSINCiAgICAgICAgICAgICAgICB4Mj0iLTE0Ni4xMDQiDQogICAgICAgICAgICAgICAgeTI9Ii0yMi4zNjIiDQogICAgICAgICAgICAgICAgeGxpbms6aHJlZj0iI2xpbmVhci1ncmFkaWVudCINCiAgICAgICAgICAgICAgLz4NCiAgICAgICAgICAgIDwvZGVmcz4NCiAgICAgICAgICAgIDxnDQogICAgICAgICAgICAgIGlkPSJHcm91cGVfMjAiDQogICAgICAgICAgICAgIGRhdGEtbmFtZT0iR3JvdXBlIDIwIg0KICAgICAgICAgICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLjIzNykiDQogICAgICAgICAgICA+DQogICAgICAgICAgICAgIDxnDQogICAgICAgICAgICAgICAgaWQ9Ikdyb3VwZV8xOCINCiAgICAgICAgICAgICAgICBkYXRhLW5hbWU9Ikdyb3VwZSAxOCINCiAgICAgICAgICAgICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDAuMjM3KSINCiAgICAgICAgICAgICAgPg0KICAgICAgICAgICAgICAgIDxwYXRoDQogICAgICAgICAgICAgICAgICBpZD0iVHJhY8OpXzE2Ig0KICAgICAgICAgICAgICAgICAgZGF0YS1uYW1lPSJUcmFjw6kgMTYiDQogICAgICAgICAgICAgICAgICBkPSJNNDguMTgzLDY2LjI4aC02LjIyYTkuMjU1LDkuMjU1LDAsMCwwLTcuNzA1LDQuMTMybC0yLjg0MSw0LjI2Mi01LjYtOC4zNzNIMTQuNjVWOTkuODM1SDI1LjgyMWw1LjYtOC4zNzMsMi44LDQuMjE5YTkuMzkzLDkuMzkzLDAsMCwwLDcuNzkxLDQuMTc2aDYuMTU2TDM2Ljk5MSw4My4wOSw0OC4xNjIsNjYuMzIzWiINCiAgICAgICAgICAgICAgICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xNC42NSAtNjYuMjgpIg0KICAgICAgICAgICAgICAgICAgZmlsbD0iIzQxYWVjMSINCiAgICAgICAgICAgICAgICAvPg0KICAgICAgICAgICAgICAgIDxwYXRoDQogICAgICAgICAgICAgICAgICBpZD0iVHJhY8OpXzE3Ig0KICAgICAgICAgICAgICAgICAgZGF0YS1uYW1lPSJUcmFjw6kgMTciDQogICAgICAgICAgICAgICAgICBkPSJNMjIuNDUsNzQuNGw1LjU3NSw4LjM5NCw1LjQtOC4xMTRMMjcuNyw2Ni41WiINCiAgICAgICAgICAgICAgICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKC01LjY2MiAtNjYuMDI2KSINCiAgICAgICAgICAgICAgICAgIGZpbGw9InVybCgjbGluZWFyLWdyYWRpZW50KSINCiAgICAgICAgICAgICAgICAvPg0KICAgICAgICAgICAgICAgIDxwYXRoDQogICAgICAgICAgICAgICAgICBpZD0iVHJhY8OpXzE4Ig0KICAgICAgICAgICAgICAgICAgZGF0YS1uYW1lPSJUcmFjw6kgMTgiDQogICAgICAgICAgICAgICAgICBkPSJNMjguMjkyLDgyLjQ0MywyMi43LDc0LjA3LDE3LjM4LDgyLjE0MSwyMy4xMDUsOTAuM1oiDQogICAgICAgICAgICAgICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTEuNTA0IC01Ny4zMDMpIg0KICAgICAgICAgICAgICAgICAgZmlsbD0idXJsKCNsaW5lYXItZ3JhZGllbnQtMikiDQogICAgICAgICAgICAgICAgLz4NCiAgICAgICAgICAgICAgPC9nPg0KICAgICAgICAgICAgICA8Zw0KICAgICAgICAgICAgICAgIGlkPSJHcm91cGVfMTkiDQogICAgICAgICAgICAgICAgZGF0YS1uYW1lPSJHcm91cGUgMTkiDQogICAgICAgICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMzMuNDA0KSINCiAgICAgICAgICAgICAgPg0KICAgICAgICAgICAgICAgIDxwYXRoDQogICAgICAgICAgICAgICAgICBpZD0iVHJhY8OpXzE5Ig0KICAgICAgICAgICAgICAgICAgZGF0YS1uYW1lPSJUcmFjw6kgMTkiDQogICAgICAgICAgICAgICAgICBkPSJNNTguNzc0LDk5LjgzNyw1Ni45NjYsOTUuM0g0Mi40MzhMNDAuNjMsOTkuODM3SDMwLjE3TDQ1LjA4Niw2Ni4zOWg5LjMyTDY5LjI1Niw5OS44MzdINTguOFpNNTMuOCw4Ny40MTgsNTAuNTA5LDc5LjJsLS44MTgtMi4yMzhMNDguODc0LDc5LjJsLTMuMjkzLDguMjIyWiINCiAgICAgICAgICAgICAgICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zMC4xNyAtNjUuOTE2KSINCiAgICAgICAgICAgICAgICAgIGZpbGw9IiM0MWFlYzEiDQogICAgICAgICAgICAgICAgLz4NCiAgICAgICAgICAgICAgICA8cGF0aA0KICAgICAgICAgICAgICAgICAgaWQ9IlRyYWPDqV8yMCINCiAgICAgICAgICAgICAgICAgIGRhdGEtbmFtZT0iVHJhY8OpIDIwIg0KICAgICAgICAgICAgICAgICAgZD0iTTgxLjczOSw5OS44MzdINzMuOUw1OS43NjQsODIuMjFsLS43MS0xLjMzNFY5OS44MzdINDkuMTFWNjYuMzloOC40NTlMNzEuMDg1LDgzLjE1N2wuNzEsMS4yOTFWNjYuMzloOS45NDRWOTkuODM3WiINCiAgICAgICAgICAgICAgICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04LjM0NSAtNjUuOTE2KSINCiAgICAgICAgICAgICAgICAgIGZpbGw9IiM0MWFlYzEiDQogICAgICAgICAgICAgICAgLz4NCiAgICAgICAgICAgICAgICA8cGF0aA0KICAgICAgICAgICAgICAgICAgaWQ9IlRyYWPDqV8yMSINCiAgICAgICAgICAgICAgICAgIGRhdGEtbmFtZT0iVHJhY8OpIDIxIg0KICAgICAgICAgICAgICAgICAgZD0iTTk1LjE0OSw3NC43NDFIODUuNTkzdjI1LjFINzUuNjQ5di0yNS4xaC05LjZWNjYuMzloMjkuMXY4LjM1MVoiDQogICAgICAgICAgICAgICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMS4xNzUgLTY1LjkxNikiDQogICAgICAgICAgICAgICAgICBmaWxsPSIjNDFhZWMxIg0KICAgICAgICAgICAgICAgIC8+DQogICAgICAgICAgICAgICAgPHBhdGgNCiAgICAgICAgICAgICAgICAgIGlkPSJUcmFjw6lfMjIiDQogICAgICAgICAgICAgICAgICBkYXRhLW5hbWU9IlRyYWPDqSAyMiINCiAgICAgICAgICAgICAgICAgIGQ9Ik05MS4xNjMsNzguOTZoMTYuNFY4Ni45aC0xNi40djQuNjI3aDE3Ljk3MnY4LjMwOEg4MS4zN1Y2Ni4zOWgyNy43MjJ2OC4yMjJIOTEuMTYzVjc4Ljk2WiINCiAgICAgICAgICAgICAgICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKDI4LjgyOSAtNjUuOTE2KSINCiAgICAgICAgICAgICAgICAgIGZpbGw9IiM0MWFlYzEiDQogICAgICAgICAgICAgICAgLz4NCiAgICAgICAgICAgICAgICA8cGF0aA0KICAgICAgICAgICAgICAgICAgaWQ9IlRyYWPDqV8yMyINCiAgICAgICAgICAgICAgICAgIGRhdGEtbmFtZT0iVHJhY8OpIDIzIg0KICAgICAgICAgICAgICAgICAgZD0iTTEyMC4wMjksMTAwLjU2NGMtMTAuNSwwLTE4LjIwOS03LjEyNC0xOC4yMDktMTcuMjRzNy4zNjEtMTcuMTU0LDE4LjI5NS0xNy4xNTRhMTkuMzg5LDE5LjM4OSwwLDAsMSwxMi42NTYsNC41bC0xLjYxNCwxLjg3M2ExNi43MywxNi43MywwLDAsMC0xMS0zLjk2Yy05LjQ3LDAtMTUuNjY5LDYuMDI2LTE1LjY2OSwxNC43NjVzNi4zMDYsMTQuODczLDE1LjYyNiwxNC44NzNhMTYuNDI5LDE2LjQyOSwwLDAsMCwxMS4zMjEtNC4yNjJsMS42NzksMS43NjVhMTkuMDM5LDE5LjAzOSwwLDAsMS0xMy4wODYsNC44NjRaIg0KICAgICAgICAgICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNTIuMzk0IC02Ni4xNykiDQogICAgICAgICAgICAgICAgICBmaWxsPSIjNDFhZWMxIg0KICAgICAgICAgICAgICAgIC8+DQogICAgICAgICAgICAgICAgPHBhdGgNCiAgICAgICAgICAgICAgICAgIGlkPSJUcmFjw6lfMjQiDQogICAgICAgICAgICAgICAgICBkYXRhLW5hbWU9IlRyYWPDqSAyNCINCiAgICAgICAgICAgICAgICAgIGQ9Ik0xNTQuNyw4My4zNjdjMCwxMC4wNzMtNy42LDE3LjItMTguMDU4LDE3LjJzLTE4LjEtNy4xMjQtMTguMS0xNy4yLDcuNi0xNy4yLDE4LjEtMTcuMlMxNTQuNyw3My4yNTEsMTU0LjcsODMuMzY3Wk0xMzYuNjQxLDk4LjE3NWM5LjEyNiwwLDE1LjM4OS02LjAyNywxNS4zODktMTQuODA4cy02LjI2My0xNC44MDgtMTUuMzg5LTE0LjgwOC0xNS40MzIsNi4wMjctMTUuNDMyLDE0LjgwOFMxMjcuNDI5LDk4LjE3NSwxMzYuNjQxLDk4LjE3NVoiDQogICAgICAgICAgICAgICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSg3MS42NiAtNjYuMTcpIg0KICAgICAgICAgICAgICAgICAgZmlsbD0iIzQxYWVjMSINCiAgICAgICAgICAgICAgICAvPg0KICAgICAgICAgICAgICA8L2c+DQogICAgICAgICAgICA8L2c+DQogICAgICAgICAgPC9zdmc+'/>
+        </div>
+        <div class="content">
+          <h1>PLATEFORME SCRUM</h1>
+          <div class="text">
+            <p>
+              Bonjour <span th:text="${userName}" ></span>,
+            </p>
+            <p>
+                Assignation de tâche
+            </p>
+            <p>
+                <b th:text="'Des tâches vous ont été assignés dans le projet ' + ${projectName} "></b>
+                <p><strong>Titre : </strong><span th:text="${title}"></span></p>
+                <p><strong>Description : </strong><span th:text="${description}"></span></p>
+                <p>Si vous avez des questions, n'hésitez pas à contacter votre chef de projet <a href="mailto:contact@kanteco.com" th:text="${scrumMail}" >contact@kanteco.com</a></p>
+            </p>
+            <p>
+              Bien cordialement,
+            </p>
+          </div>
+          <div class="social-network">
+            <a
+            href="https://www.facebook.com/kantecompany"
+            style="display: inline-block; margin: 0 10px"
+          >
+            <img
+              src="https://i.ibb.co/sKpJM1m/1.png"
+              alt="Facebook"
+              width="60"
+              height="60"
+              style="display: block"
+            />
+          </a>
+          <a
+            href="https://fr.linkedin.com/company/kante-company"
+            style="display: inline-block; margin: 0 10px"
+          >
+            <img
+              src="https://i.ibb.co/jfd3cR1/linkedin.png"
+              alt="LinkedIn"
+              width="60"
+              height="60"
+              style="display: block"
+            />
+          </a>
+          <a
+            href="https://www.instagram.com/kante_company/"
+            style="display: inline-block; margin: 0 10px"
+          >
+            <img
+              src="https://i.ibb.co/pZnV9KW/2.png"
+              alt="Instagram"
+              width="60"
+              height="60"
+              style="display: block"
+            />
+          </a>
+          </div>
+          <div class="footer">
+            Vous avez reçu cet email en tant que développeur au sein de <br />
+            <a href="https://kanteco.com/">
+              Kante Company
+            </a>
+          </div>
+        </div>
+        <!-- social network -->
+        <!-- footer -->
+      </div>
+    </div>
+  </body>
+</html>

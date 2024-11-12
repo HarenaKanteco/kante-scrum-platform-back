@@ -22,6 +22,7 @@ import com.scrumplateform.kante.exception.userStory.UserStoryNotFoundException;
 import com.scrumplateform.kante.http.response.Response;
 import com.scrumplateform.kante.model.cdcTechnique.CdcTechnique;
 import com.scrumplateform.kante.model.conception.Conception;
+import com.scrumplateform.kante.model.developpement.SprintContentDev;
 import com.scrumplateform.kante.model.developpement.SprintDev;
 import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.projet.ProjetProjection;
@@ -29,6 +30,7 @@ import com.scrumplateform.kante.model.sprintPlanning.Sprint;
 import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
+import com.scrumplateform.kante.service.developpement.DeveloppementService;
 import com.scrumplateform.kante.service.etape.EtapeServiceImpl;
 import com.scrumplateform.kante.service.projet.ProjetServiceImpl;
 import com.scrumplateform.kante.service.utilisateur.UtilisateurServiceImpl;
@@ -45,6 +47,23 @@ public class ProjetController {
 
     @Autowired
     private UtilisateurServiceImpl utilisateurService;
+
+    @Autowired
+    private DeveloppementService developpementService;
+
+    @PostMapping("/{projetId}/send-task-mail")
+    public ResponseEntity<Response> sendTaskNotification(@PathVariable("projetId") String projetId, @RequestBody SprintContentDev sprintContentDev) {
+        Response response = new Response();
+        try {
+            developpementService.sendTaskNotification(sprintContentDev, projetId);
+            response.success(null, "Mail assignation tâche envoyé");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.error(null, "Erreur lors de la création du projet: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PutMapping("/{projetId}/sprint-planning-tasks")
     public ResponseEntity<Response> updateSprintPlanningTasksInProject(

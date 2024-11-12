@@ -1,0 +1,542 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    
+    <head>
+      <meta charset="utf-8">
+      <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    
+      <title>Dashboard - NiceAdmin Bootstrap Template</title>
+      <meta content="" name="description">
+      <meta content="" name="keywords">
+    
+      <!-- Favicons -->
+      <link href="/img/favicon.png" rel="icon">
+      <link href="/img/apple-touch-icon.png" rel="apple-touch-icon">
+    
+      <!-- Google Fonts -->
+      <link href="https://fonts.gstatic.com" rel="preconnect">
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    
+      <!-- Vendor CSS Files -->
+      <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+      <link th:href="@{/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+      <link th:href="@{/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet">
+      <link th:href="@{/vendor/quill/quill.snow.css}" rel="stylesheet">
+      <link th:href="@{/vendor/quill/quill.bubble.css}" rel="stylesheet">
+      <link th:href="@{/vendor/remixicon/remixicon.css}" rel="stylesheet">
+      <link th:href="@{/vendor/simple-datatables/style.css}" rel="stylesheet">
+    
+      <!-- Template Main CSS File -->
+      <link th:href="@{/css/style.css}" rel="stylesheet">
+    
+    
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+      <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    
+      <!-- Fontawsome -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+    
+    
+        <!-- Toast -->
+      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    
+    
+    
+      <!-- Jquery -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+    
+      <!-- select2 -->
+      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+      <!-- =======================================================
+      * Template Name: NiceAdmin
+      * Updated: Jan 09 2024 with Bootstrap v5.3.2
+      * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+      * Author: BootstrapMade.com
+      * License: https://bootstrapmade.com/license/
+      ======================================================== -->
+    </head>
+    
+    <body>
+    
+      <!-- ======= Header ======= -->
+      <header id="header" class="header fixed-top d-flex align-items-center">
+    
+        <div class="d-flex align-items-center justify-content-between">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <img th:src="@{/img/logo.png}" alt="">
+            <span class="d-none d-lg-block">Platforme Student</span>
+          </a>
+          <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
+    
+        <div class="search-bar">
+          <form class="search-form d-flex align-items-center" method="POST" action="#">
+            <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+            <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+          </form>
+        </div><!-- End Search Bar -->
+    
+        <nav class="header-nav ms-auto">
+          <ul class="d-flex align-items-center">
+    
+            <li class="nav-item d-block d-lg-none">
+              <a class="nav-link nav-icon search-bar-toggle " href="#">
+                <i class="bi bi-search"></i>
+              </a>
+            </li><!-- End Search Icon-->
+    
+    
+            <li class="nav-item dropdown pe-3">
+    
+              <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                <img th:src="@{/img/profile-img.jpg}" alt="Profile" class="rounded-circle">
+                <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+              </a><!-- End Profile Iamge Icon -->
+    
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                <li class="dropdown-header">
+                  <h6>Kevin Anderson</h6>
+                  <span>Web Designer</span>
+                </li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+    
+                <li>
+                  <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                    <i class="bi bi-person"></i>
+                    <span>My Profile</span>
+                  </a>
+                </li>
+    
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+    
+                <li>
+                  <a class="dropdown-item d-flex align-items-center" href="/admin/logout" th:href="@{/admin/logout}">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sign Out</span>
+                  </a>
+                </li>
+    
+              </ul><!-- End Profile Dropdown Items -->
+            </li><!-- End Profile Nav -->
+    
+          </ul>
+        </nav><!-- End Icons Navigation -->
+    
+      </header><!-- End Header -->
+    
+      <!-- ======= Sidebar ======= -->
+      <aside id="sidebar" class="sidebar">
+    
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+          <li class="nav-item" id="section-etudiants">
+            <a class="nav-link collapsed" data-bs-target="#components-nav-abo" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-solid fa-user-graduate"></i><span>Abonnements</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav-abo" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/payments" id="subsection-liste-etudiants">
+                  <i class="bi bi-circle"></i><span>Liste des abonnements</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+    
+          <li class="nav-item" id="section-etudiants">
+            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-solid fa-user-graduate"></i><span>Étudiants</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/students" id="subsection-liste-etudiants">
+                  <i class="bi bi-circle"></i><span>Liste des étudiants</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+    
+    
+          <li class="nav-item" id="section-parcours">
+            <a class="nav-link collapsed" data-bs-target="#components-nav1" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-route"></i><span>Gestion de parcours</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav1" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/courses" id="subsection-liste-parcours">
+                  <i class="bi bi-circle"></i><span>Liste des parcours</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+    
+          <li class="nav-item" id="section-vagues">
+            <a class="nav-link collapsed" data-bs-target="#components-nav-vagues" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-wave-square"></i><span>Gestion des vagues</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav-vagues" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/waves" id="subsection-liste-vagues">
+                  <i id="mimi" class="bi bi-circle"></i><span>Liste des vagues</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item" id="section-projets">
+            <a class="nav-link collapsed" data-bs-target="#components-nav-projets" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-tasks"></i><span>Gestion des projets</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav-projets" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/projects" id="subsection-liste-projets">
+                  <i id="mimi" class="bi bi-circle"></i><span>Liste des projets</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+    
+          <li class="nav-item" id="section-renforcements">
+            <a class="nav-link collapsed" data-bs-target="#components-nav2" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-graduation-cap"></i><span>Gestion de renforcements</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/renforcement_themes" id="subsection-categorie-renforcements">
+                  <i class="bi bi-circle"></i><span>Catégorie renforcements</span>
+                </a>
+              </li>
+              <li>
+                <a href="/admin/renforcements" id="subsection-renforcements">
+                  <i class="bi bi-circle"></i><span>Renforcements</span>
+                </a>
+              </li>
+            </ul>
+          </li><!-- End Components Nav -->
+
+
+
+
+          <li class="nav-item" id="section-entretiens">
+            <a class="nav-link collapsed" data-bs-target="#components-entretiens" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-comments"></i><span>Gestion des entretiens</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-entretiens" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/student-interview" id="subsection-liste-entretiens">
+                  <i id="mimi" class="bi bi-circle"></i><span>Liste des entretiens</span>
+                </a>
+              </li>
+            </ul>
+          </li><!-- End Components Nav -->
+
+          <li class="nav-item" id="section-defis">
+            <a class="nav-link collapsed" data-bs-target="#components-defis" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-trophy"></i><span>Gestion des défis</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-defis" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/challenges" id="subsection-liste-defis">
+                  <i id="mimi" class="bi bi-circle"></i><span>Liste des défis</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+    
+          <li class="nav-item" id="section-publications">
+            <a class="nav-link collapsed" data-bs-target="#components-publications" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-newspaper"></i><span>Gestion de publications</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-publications" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/posts" id="subsection-liste-publications">
+                  <i id="mimi" class="bi bi-circle"></i><span>Liste des publications</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item" id="section-feedbacks">
+            <a class="nav-link collapsed" data-bs-target="#components-nav3" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-solid fa-comment-medical"></i><span>Gestion des feedbacks</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav3" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/feedbacks" id="subsection-liste-feedbacks">
+                  <i class="bi bi-circle"></i><span>Liste des feedbacks</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item" id="section-partenaires">
+            <a class="nav-link collapsed" data-bs-target="#components-nav4" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-solid fa-handshake"></i><span>Gestion des partenaires</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav4" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/partners" id="subsection-liste-partenaires">
+                  <i class="bi bi-circle"></i><span>Liste des partenaires</span>
+              </li>
+            </ul>
+            </li>   
+          <!-- End Components Nav -->
+      
+          <li class="nav-item" id="section-publicites">
+            <a class="nav-link collapsed" data-bs-target="#components-publicites" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-bullhorn"></i><span>Gestion des publicités</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-publicites" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/ads" id="subsection-liste-publicites">
+                  <i id="mimi" class="bi bi-circle"></i><span>Liste des publicités</span>
+                </a>
+              </li>
+            </ul>
+          </li><!-- End Components Nav -->
+
+          <li class="nav-item" id="section-config">
+            <a class="nav-link collapsed" data-bs-target="#components-config" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-cog"></i><span>Configuration publicités</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-config" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/ads-config" id="subsection-configurations">
+                  <i id="mimi" class="bi bi-circle"></i><span>Configurations</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+    
+          <li class="nav-item" id="section-signalements">
+            <a class="nav-link collapsed" data-bs-target="#components-nav5" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-solid fa-exclamation"></i><span>Gestion des signalements</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav5" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/reports" id="subsection-liste-signalements">
+                  <i class="bi bi-circle"></i><span>Liste des signalements</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+    
+          <li class="nav-item" id="section-actualites">
+            <a class="nav-link collapsed" data-bs-target="#components-nav6" data-bs-toggle="collapse" href="#">
+              <i class="fas fa-solid fa-scroll"></i><span>Gestion des actualités</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav6" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/admin/actu/create" id="subsection-creer-actualites">
+                  <i class="bi bi-circle"></i><span>Créer des actualités</span>
+                </a>
+              </li>
+              <li>
+                <a href="/admin/actu" id="subsection-liste-actualites">
+                  <i class="bi bi-circle"></i><span>liste des actualités</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- End Components Nav -->
+        </ul>
+    
+      </aside><!-- End Sidebar-->
+    
+      <main id="main" class="main" layout:fragment="main">
+        <!-- Contenu principal -->
+      </main><!-- End #main -->
+    
+      <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    
+      <!-- Vendor JS Files -->
+      <script th:src="@{/vendor/apexcharts/apexcharts.min.js}"></script>
+      <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+      <script th:src="@{/vendor/chart.js/chart.umd.js}"></script>
+      <script th:src="@{/vendor/echarts/echarts.min.js}"></script>
+      <script th:src="@{/vendor/quill/quill.min.js}"></script>
+      <script th:src="@{/vendor/simple-datatables/simple-datatables.js}"></script>
+      <script th:src="@{/vendor/tinymce/tinymce.min.js}"></script>
+      <script th:src="@{/vendor/php-email-form/validate.js}"></script>
+    
+      <!-- Template Main JS File -->
+      <script th:src="@{/js/main.js}"></script>
+      <script th:src="@{/js/preview.js}"></script>
+      <!-- <script th:src="@{/js/append-input.js}"></script> -->
+
+      <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+        <script>
+            // Initialiser CKEditor 5 sur le textarea
+            ClassicEditor
+                .create(document.querySelector('#descriptionProjet'))
+                .catch(error => {
+                    console.error(error);
+                });
+
+                document.querySelectorAll('.descriptionDefis').forEach((element) => {
+                  ClassicEditor
+                      .create(element)
+                      .catch(error => {
+                          console.error(error);
+                      });
+              });
+
+        </script>
+    
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+      <script th:if="${error != null && error != ''}" th:inline="javascript">
+        Toastify({
+          text: /*[[${error}]]*/'',
+          duration: 10000,
+          close: true,
+          style: {
+            background: "#dc3545",
+          }
+        }).showToast();
+      </script>
+    
+      <script th:inline="javascript">
+        $(document).ready(() => {
+          const btnRenforcementCourses = document.querySelectorAll('.btn-renforcement');
+          const btnCourses = document.querySelectorAll('.btn-courseListe');
+    
+          $('.nextBtn').click(() => {
+            $('#ajouterWave').modal('hide')
+            $('#ajouterProject').modal('show')
+          })
+    
+          $('.btnPrecedent').click(() => {
+            $('#ajouterWave').modal('show')
+            $('#ajouterProject').modal('hide')
+          })
+    
+          btnCourses.forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const courseId = btn.dataset.id
+              console.log(courseId);
+              const courseListe = document.getElementById(`courseListe${courseId}`);
+              if (courseListe.options.length == 0) {
+                $.ajax({
+                  type: "get",
+                  url: `/waves/notIn/${courseId}`,
+                  dataType: 'json',
+                  success: function (response) {
+                    const data = response.data;
+                    data.forEach(course => {
+                      $(`#courseListe${courseId}`).append($('<option>', {
+                        value: course.id,
+                        text: course.course
+                      }))
+                    });
+                    console.log(data);
+                  },
+                  error: (xhr, statut, error) => {
+                    console.log("xhr: " + xhr);
+                    console.log("statut: " + statut);
+                    console.log("error: " + error);
+                  }
+                });
+              }
+            })
+          })
+    
+          btnRenforcementCourses.forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const courseId = btn.dataset.id
+              const renforcementListe = document.getElementById(`renforcementListe${courseId}`);
+              if (renforcementListe.options.length == 0) {
+                $.ajax({
+                  type: "get",
+                  url: `/course-renforcements?courseId=${courseId}`,
+                  dataType: 'json',
+                  success: function (response) {
+                    const data = response.data;
+                    data.forEach(renforcement => {
+                      $(`#renforcementListe${courseId}`).append($('<option>', {
+                        value: renforcement.id,
+                        text: renforcement.title
+                      }))
+                    });
+                    console.log(data);
+                  },
+                  error: () => {
+                    console.log("Erreur lors du fetch");
+                  }
+                });
+              }
+            })
+          })
+    
+          $('.modal').on('shown.bs.modal', function () {
+            // Initialize Select2 for all select elements with the class 'my-select' within the shown modal
+            $(this).find('.my-select').select2({
+              dropdownParent: $(this)
+            });
+          });
+    
+        
+        });
+      </script>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const sections = document.querySelectorAll('.nav-item');
+          const subsections = document.querySelectorAll('.nav-content a');
+
+          const activeSectionId = localStorage.getItem('activeSection');
+          const activeSubsectionId = localStorage.getItem('activeSubsection');
+
+          if (activeSectionId) {
+            const activeSection = document.getElementById(activeSectionId);
+            if (activeSection) {
+              activeSection.classList.add('active-section');
+              const collapseElement = activeSection.querySelector('.collapse');
+              if (collapseElement) {
+                collapseElement.classList.add('show');
+              }
+            }
+          }
+
+          if (activeSubsectionId) {
+            const activeSubsection = document.getElementById(activeSubsectionId);
+            if (activeSubsection) {
+              activeSubsection.classList.add('active-subsection');
+            }
+          }
+
+          sections.forEach(section => {
+            section.addEventListener('click', function () {
+              sections.forEach(sec => sec.classList.remove('active-section'));
+              section.classList.add('active-section');
+              localStorage.setItem('activeSection', section.id);
+
+              // Ouvrir la section
+              const collapseElement = section.querySelector('.collapse');
+              if (collapseElement) {
+                collapseElement.classList.add('show');
+              }
+            });
+          });
+
+          subsections.forEach(subsection => {
+            subsection.addEventListener('click', function (event) {
+              event.stopPropagation();
+              subsections.forEach(sub => sub.classList.remove('active-subsection'));
+              subsection.classList.add('active-subsection');
+              localStorage.setItem('activeSubsection', subsection.id);
+            });
+          });
+        });
+      </script>
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    </body>
+    
+    </html>

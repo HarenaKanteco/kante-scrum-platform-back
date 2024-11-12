@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Template Design Email</title>
+    <!--[if !mso]><!-->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!--<![endif]-->
+    <style type="text/css">
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+    </style>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f1f7f7;
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', Arial, sans-serif; font-weight: 500; letter-spacing: 0.5px;
+    "
+  >
+    <table
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="min-width: 100%"
+    >
+      <tr>
+        <td align="center" valign="top" style="padding: 20px">
+          <table
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            width="700"
+            style="max-width: 700px"
+          >
+            <tr>
+              <td align="center" valign="top">
+                <img
+                  src="https://firebasestorage.googleapis.com/v0/b/kanteco.appspot.com/o/scrum-platform%2Fuploads%2Fcover%2FLOGO%20VARIATION-12-2.png?alt=media&token=120eef90-ce66-478e-bec6-58bc93f63612"
+                  width="400"
+                  height="160"
+                  alt="logo"
+                  style="display: block; margin-bottom: 20px"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td
+                
+                valign="top"
+                style="
+                  background-color: #ffffff;
+                  border-top: 6px solid #39aec1;
+                  padding: 40px;
+                "
+              >
+                <h1
+                  style="
+                    font-family: 'Montserrat', Arial, sans-serif;
+                    font-size: 24px;
+                    color: #707070;
+                    margin-bottom: 40px;
+                    text-align: center;
+                  "
+                  th:text="${projectName}"
+                >
+                  
+                </h1>
+                <p
+                  style="
+                    font-family: 'Montserrat', Arial, sans-serif;
+                    font-size: 18px;
+                    color: #707070;
+                    margin-bottom: 16px;
+                    line-height: 1.5;
+                  "
+                >
+                  Bonjour <b th:text="${userName}"></b>,
+                </p>
+                <p
+                  style="
+                    font-family: 'Montserrat', Arial, sans-serif;
+                    font-size: 18px;
+                    color: #707070;
+                    margin-bottom: 16px;
+                    line-height: 1.5;
+                  "
+                >
+                Des tâches vous ont été assignés dans le projet: <b th:text="${projectName}"></b>
+                <p
+                  style="
+                    font-family: 'Montserrat', Arial, sans-serif;
+                    font-size: 18px;
+                    color: #707070;
+                    margin-bottom: 16px;
+                    line-height: 1.5;
+                  "
+                  >
+                  <b>Titre : </b><span th:text="${title}"></span>
+                </p>
+                <p
+                  style="
+                    font-family: 'Montserrat', Arial, sans-serif;
+                    font-size: 18px;
+                    color: #707070;
+                    margin-bottom: 16px;
+                    line-height: 1.5;
+                  "
+                >
+                  <b>Début : </b><span th:text="${dateDebut}"></span>
+                </p>
+                <p
+                  style="
+                    font-family: 'Montserrat', Arial, sans-serif;
+                    font-size: 18px;
+                    color: #707070;
+                    margin-bottom: 16px;
+                    line-height: 1.5;
+                  "
+                >
+                  <b>Fin : </b><span th:text="${dateFin}"></span>
+                </p>
+                <p
+                  style="
+                    font-family: 'Montserrat', Arial, sans-serif;
+                    font-size: 18px;
+                    color: #707070;
+                    margin-bottom: 16px;
+                    line-height: 1.5;
+                  "
+                >
+                  Si vous avez des questions, n'hésitez pas à contacter votre chef de projet <a th:href="'mailto:' + ${scrumMail}" th:text="${scrumMail}" >contact@kanteco.com</a>
+                </p>
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="margin: 0 auto"
+                >
+                  <tr>
+                    <td
+                      align="center"
+                      bgcolor="#39aec1"
+                      style="border-radius: 5px"
+                    >
+                      <a
+                        th:href="${taskLink}"
+                        style="
+                          font-family: 'Montserrat', Arial, sans-serif;
+                          font-size: 18px;
+                          color: #ffffff;
+                          text-decoration: none;
+                          padding: 12px 24px;
+                          border-radius: 5px;
+                          display: inline-block;
+                          font-weight: bold;
+                          letter-spacing: 1px;
+                        "
+                        >ACCÉDER A LA TACHE</a
+                      >
+                    </td>
+                  </tr>
+                </table>
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="margin-top: 40px; margin-bottom: 40px"
+                >
+                  <tr>
+                    <td align="center">
+                      <a
+                        href="https://www.facebook.com/kantecompany"
+                        style="display: inline-block; margin: 0 10px"
+                      >
+                        <img
+                          src="https://i.ibb.co/sKpJM1m/1.png"
+                          alt="Facebook"
+                          width="60"
+                          height="60"
+                          style="display: block"
+                        />
+                      </a>
+                      <a
+                        href="https://fr.linkedin.com/company/kante-company"
+                        style="display: inline-block; margin: 0 10px"
+                      >
+                        <img
+                          src="https://i.ibb.co/jfd3cR1/linkedin.png"
+                          alt="LinkedIn"
+                          width="60"
+                          height="60"
+                          style="display: block"
+                        />
+                      </a>
+                      <a
+                        href="https://www.instagram.com/kante_company/"
+                        style="display: inline-block; margin: 0 10px"
+                      >
+                        <img
+                          src="https://i.ibb.co/pZnV9KW/2.png"
+                          alt="Instagram"
+                          width="60"
+                          height="60"
+                          style="display: block"
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                  
+                </table>
+                <p
+                  style="
+                    font-family: 'Montserrat', Arial, sans-serif;
+                    font-size: 14px;
+                    color: #707070;
+                    text-align: center;
+                  "
+                >
+                  Vous avez reçu cet e-mail en tant que développeur de :<br />
+                  <a
+                    href="https://kanteco.com/"
+                    style="color: #39aec1; text-decoration: none"
+                    >Kante Company</a
+                  >
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

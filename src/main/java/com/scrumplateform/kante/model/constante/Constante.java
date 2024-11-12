@@ -22,4 +22,5 @@ public class Constante {
     List<CountRole> countRoles;
     Template template;
     Developpement developpement;
+    Environnement environnement;
 }
