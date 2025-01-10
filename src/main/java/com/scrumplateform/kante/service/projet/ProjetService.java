@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.scrumplateform.kante.model.lien.Lien;
+import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -370,5 +372,17 @@ public class ProjetService implements ProjetServiceImpl {
             String regex = ".*" + keyword + ".*";
             return projetRepository.findByScrumIdAndKeyword(scrumId, regex, pageable);
         }
+    }
+
+    @Override
+    public Projet updateLiensInProject(String projetId, List<Lien> updatedLiens) throws ProjectNotFoundException {
+        Projet projet = projetRepository.findById(projetId)
+            .orElseThrow(() -> new ProjectNotFoundException("Projet non trouvé avec l'ID : " + projetId));
+
+        // Mise à jour de l'attribut 'liens'
+        projet.setLiens(updatedLiens);
+
+        // Sauvegarder le projet mis à jour
+        return projetRepository.save(projet);
     }
 }

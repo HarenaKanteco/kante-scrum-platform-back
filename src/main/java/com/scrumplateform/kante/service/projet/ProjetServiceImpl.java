@@ -1,6 +1,8 @@
 package com.scrumplateform.kante.service.projet;
 
 import java.util.List;
+
+import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import com.scrumplateform.kante.model.sprintPlanning.Sprint;
 import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
+import com.scrumplateform.kante.model.lien.Lien;
 
 @Service
 public interface ProjetServiceImpl {
@@ -38,4 +41,5 @@ public interface ProjetServiceImpl {
     public Projet getProjetById(String projetId);
     public Page<Projet> getPaginatedProjects(String scrumId, String keyword, int etapeOrdre, int page, int size);
     public Page<ProjetProjection> getPaginatedProjects(String scrumId, String keyword, int page, int size);
+    public Projet updateLiensInProject(String projetId, List<Lien> updatedLiens) throws ProjectNotFoundException;
 }

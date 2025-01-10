@@ -32,6 +32,7 @@ import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 import com.scrumplateform.kante.service.etape.EtapeServiceImpl;
 import com.scrumplateform.kante.service.projet.ProjetServiceImpl;
 import com.scrumplateform.kante.service.utilisateur.UtilisateurServiceImpl;
+import com.scrumplateform.kante.model.lien.Lien;
 
 @RestController
 @RequestMapping("/api/v1/projets")
@@ -398,6 +399,25 @@ public class ProjetController {
         } catch (Exception e) {
             // Handle any exceptions and create an error response in French
             response.error(null, "Une erreur est survenue lors de la récupération des projets : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{projetId}/liens")
+    public ResponseEntity<Response> updateLiensInProject(
+            @PathVariable("projetId") String projetId,
+            @RequestBody List<Lien> updatedLiens) {
+
+        Response response = new Response();
+        try {
+            Projet updatedProjet = projetService.updateLiensInProject(projetId, updatedLiens);
+            response.success(updatedProjet, "Liens mis à jour avec succès dans le projet.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la mise à jour des liens : " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -2,6 +2,7 @@ package com.scrumplateform.kante.repository.projet;
 
 import java.util.List;
 
+import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
