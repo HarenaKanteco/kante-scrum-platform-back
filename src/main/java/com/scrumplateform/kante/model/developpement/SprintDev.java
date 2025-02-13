@@ -3,10 +3,12 @@ package com.scrumplateform.kante.model.developpement;
 import java.util.Date;
 import java.util.List;
 
+import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 
 @Data
+@Getter
 @Document(collection = "sprintDev")
 public class SprintDev {
     

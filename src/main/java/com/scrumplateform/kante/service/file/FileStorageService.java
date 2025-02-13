@@ -32,4 +32,26 @@ public class FileStorageService {
             
             return path.toString().replaceAll("\\\\", "/").replaceFirst(".", "");
     }
+
+    public String storeFileSprint(String directory, MultipartFile file) throws IOException {
+        String regex = "[-()=+!&#'\"*$ùéè\s+]";
+
+        Path uploadPath = Paths.get(uploadDirectory + "/" + directory);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        byte[] bytes = file.getBytes();
+        String filename = UUID.randomUUID().toString() + "-" +
+                file.getOriginalFilename().replaceAll(regex, "-");
+        Path path = uploadPath.resolve(filename);
+        Files.write(path, bytes);
+
+        return String.format("/uploads/%s/%s", directory, filename);
+    }
+
+    public Path getFilePath(String directory, String filename) {
+        return Paths.get(uploadDirectory, directory, filename);
+    }
+
 }

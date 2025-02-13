@@ -1,8 +1,8 @@
 package com.scrumplateform.kante.repository.projet;
 
+import java.util.Date;
 import java.util.List;
 
-import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,4 +33,8 @@ public interface ProjetRepository extends MongoRepository<Projet, String> {
 
     @Query(value = "{ 'scrum.id': ?0, $or: [ { 'client.email': { $regex: ?1, $options: 'i' } }, { 'client.entreprise.nom': { $regex: ?1, $options: 'i' } }, { 'titre': { $regex: ?1, $options: 'i' } }, { 'description': { $regex: ?1, $options: 'i' } } ] }", fields = "{ 'id': 1, 'client': 1, 'titre': 1, 'description': 1, 'etape': 1 }")
     Page<ProjetProjection> findByScrumIdAndKeyword(String scrumId, String keyword, Pageable pageable);
+
+    @Query(value = "{ 'dateCreation': { $gte: ?0, $lt: ?1 } }", 
+           fields = "{ 'technique.technologies.label': 1 }")
+    List<Projet> findTechnologiesByDateRange(Date startDate, Date endDate);
 }

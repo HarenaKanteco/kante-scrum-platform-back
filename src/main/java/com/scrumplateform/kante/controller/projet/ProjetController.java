@@ -33,6 +33,8 @@ import com.scrumplateform.kante.service.etape.EtapeServiceImpl;
 import com.scrumplateform.kante.service.projet.ProjetServiceImpl;
 import com.scrumplateform.kante.service.utilisateur.UtilisateurServiceImpl;
 import com.scrumplateform.kante.model.lien.Lien;
+import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
+import com.scrumplateform.kante.dto.sprint.SprintDetailDTO;
 
 @RestController
 @RequestMapping("/api/v1/projets")
@@ -111,6 +113,25 @@ public class ProjetController {
         Response response = new Response();
         try {
             Projet updatedProjet = projetService.updateSprintDevsInProject(projetId, updatedSprintDevs);
+            response.success(updatedProjet, "Sprints developpements mis à jour avec succès dans le projet.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la mise à jour des sprints developpements : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{projetId}/sprint-devs-task")
+    public ResponseEntity<Response> updateSprintDevsTask(
+            @PathVariable("projetId") String projetId,
+            @RequestBody List<SprintDev> updatedSprintDevs) {
+
+        Response response = new Response();
+        try {
+            Projet updatedProjet = projetService.updateSprintDevInDevTask(projetId, updatedSprintDevs);
             response.success(updatedProjet, "Sprints developpements mis à jour avec succès dans le projet.");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (ProjectNotFoundException e) {
@@ -418,6 +439,42 @@ public class ProjetController {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             response.error(null, "Une erreur est survenue lors de la mise à jour des liens : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/technologies/most-used")
+    public ResponseEntity<Response> getMostUsedTechnologies(
+            @RequestParam(value = "month") int month,
+            @RequestParam("year") int year) {
+
+        Response response = new Response();
+        try {
+            List<ProjetTechnoCount> technoCounts = projetService.getMostUsedTechnologies(month, year);
+            response.success(technoCounts, "Technologies récupérées avec succès.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la récupération des technologies : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{projetId}/sprints/details")
+    public ResponseEntity<Response> getProjetSprintsDetails(
+            @PathVariable("projetId") String projetId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        Response response = new Response();
+        try {
+            Page<SprintDetailDTO> sprintsDetails = projetService.getProjetSprints(projetId, page, size);
+            response.success(sprintsDetails, "Détails des sprints récupérés avec succès");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la récupération des détails des sprints : " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

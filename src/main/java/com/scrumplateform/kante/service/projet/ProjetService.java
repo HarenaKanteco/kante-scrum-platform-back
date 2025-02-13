@@ -1,13 +1,12 @@
 package com.scrumplateform.kante.service.projet;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.scrumplateform.kante.model.developpement.SprintContentDev;
 import com.scrumplateform.kante.model.lien.Lien;
 import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
+import com.scrumplateform.kante.model.technique.Technologie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -43,6 +42,9 @@ import com.scrumplateform.kante.repository.utilisateur.UtilisateurRepository;
 import com.scrumplateform.kante.security.Role;
 import com.scrumplateform.kante.service.constante.ConstanteService;
 import com.scrumplateform.kante.service.notification.NotificationServiceImpl;
+import com.scrumplateform.kante.dto.sprint.SprintDetailDTO;
+import com.scrumplateform.kante.service.email.EmailService;
+import org.thymeleaf.context.Context;
 
 @Service
 public class ProjetService implements ProjetServiceImpl {
@@ -64,6 +66,9 @@ public class ProjetService implements ProjetServiceImpl {
 
     @Autowired 
     private NotificationServiceImpl notificationService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public void sendProjectAssignationNotification(String idUtilisateur) throws Exception {
@@ -145,18 +150,141 @@ public class ProjetService implements ProjetServiceImpl {
     @Override
     public Projet updateSprintDevsInProject(String projetId, List<SprintDev> updatedSprintDevs) throws ProjectNotFoundException {
         Optional<Projet> optionalProjet = projetRepository.findById(projetId);
-        
+
         if (optionalProjet.isEmpty()) {
             throw new ProjectNotFoundException("Projet non trouvé pour l'id : " + projetId);
         }
 
         Projet projet = optionalProjet.get();
-
-        // Remplacer la liste existante des sprints par la nouvelle liste
+        
+        // Récupérer les anciens sprints pour comparaison
+        List<SprintDev> oldSprintDevs = projet.getSprintDevs();
+        
+        // Map pour stocker les tâches par utilisateur
+        Map<String, Map<String, List<SprintContentDev>>> userTasksMap = new HashMap<>();
+        
+        // Parcourir les sprints et collecter les tâches par utilisateur
+        for (SprintDev sprintDev : updatedSprintDevs) {
+            if (sprintDev.getSprintContentDevs() != null) {
+                for (SprintContentDev content : sprintDev.getSprintContentDevs()) {
+                    if (content.getResponsable() != null) {
+                        String userId = content.getResponsable().getId();
+                        
+                        // Vérifier si c'est une nouvelle tâche ou si le responsable a changé
+                        boolean shouldNotify = isNewOrModifiedTask(oldSprintDevs, sprintDev.getId(), content);
+                        
+                        if (shouldNotify) {
+                            // Initialiser la map pour l'utilisateur si nécessaire
+                            userTasksMap.putIfAbsent(userId, new HashMap<>());
+                            
+                            // Initialiser la liste des tâches pour ce sprint si nécessaire
+                            userTasksMap.get(userId).putIfAbsent(sprintDev.getTitre(), new ArrayList<>());
+                            
+                            // Ajouter la tâche à la liste
+                            userTasksMap.get(userId).get(sprintDev.getTitre()).add(content);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Envoyer un email par utilisateur avec toutes ses tâches
+        for (Map.Entry<String, Map<String, List<SprintContentDev>>> userEntry : userTasksMap.entrySet()) {
+            try {
+                // Récupérer l'utilisateur
+                Utilisateur responsable = utilisateurRepository.findById(userEntry.getKey())
+                    .orElseThrow(() -> new Exception("Utilisateur non trouvé"));
+                
+                // Préparer le contexte pour le template
+                Context context = new Context();
+                context.setVariable("responsableName", responsable.getEmail());
+                context.setVariable("sprintTasksMap", userEntry.getValue());
+                
+                // Envoyer l'email
+                emailService.sendEmail(
+                    responsable.getEmail(),
+                    "Assignation de tâches - Sprint Dev - Kante Scrum",
+                    "sprint-dev-notification",
+                    context
+                );
+            } catch (Exception e) {
+                // Logger l'erreur mais continuer le processus
+                e.printStackTrace();
+            }
+        }
+        
+        // Mettre à jour les sprints
         projet.setSprintDevs(updatedSprintDevs);
-
-        // Sauvegarder le projet mis à jour dans la base de données
+        
+        // Sauvegarder le projet mis à jour
         return projetRepository.save(projet);
+    }
+
+    @Override
+    public Projet updateSprintDevInDevTask(String projetId, List<SprintDev> updatedSprintDevs) throws ProjectNotFoundException {
+        Optional<Projet> optionalProjet = projetRepository.findById(projetId);
+
+        if (optionalProjet.isEmpty()) {
+            throw new ProjectNotFoundException("Projet non trouvé pour l'id : " + projetId);
+        }
+
+        Projet projet = optionalProjet.get();
+        
+        // Récupérer les anciens sprints pour comparaison
+        List<SprintDev> oldSprintDevs = projet.getSprintDevs();
+        
+        // Map pour stocker les tâches par utilisateur
+        Map<String, Map<String, List<SprintContentDev>>> userTasksMap = new HashMap<>();
+        
+        // Parcourir les sprints et collecter les tâches par utilisateur
+        for (SprintDev sprintDev : updatedSprintDevs) {
+            if (sprintDev.getSprintContentDevs() != null) {
+                for (SprintContentDev content : sprintDev.getSprintContentDevs()) {
+                    if (content.getResponsable() != null) {
+                        String userId = content.getResponsable().getId();
+                        
+                        // Vérifier si c'est une nouvelle tâche ou si le responsable a changé
+                        boolean shouldNotify = isNewOrModifiedTask(oldSprintDevs, sprintDev.getId(), content);
+                        
+                        if (shouldNotify) {
+                            // Initialiser la map pour l'utilisateur si nécessaire
+                            userTasksMap.putIfAbsent(userId, new HashMap<>());
+                            
+                            // Initialiser la liste des tâches pour ce sprint si nécessaire
+                            userTasksMap.get(userId).putIfAbsent(sprintDev.getTitre(), new ArrayList<>());
+                            
+                            // Ajouter la tâche à la liste
+                            userTasksMap.get(userId).get(sprintDev.getTitre()).add(content);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Mettre à jour les sprints
+        projet.setSprintDevs(updatedSprintDevs);
+        
+        // Sauvegarder le projet mis à jour
+        return projetRepository.save(projet);
+    }
+
+    private boolean isNewOrModifiedTask(List<SprintDev> oldSprintDevs, String sprintId, SprintContentDev newContent) {
+        if (oldSprintDevs == null) return true;
+        
+        for (SprintDev oldSprint : oldSprintDevs) {
+            if (oldSprint.getId().equals(sprintId) && oldSprint.getSprintContentDevs() != null) {
+                for (SprintContentDev oldContent : oldSprint.getSprintContentDevs()) {
+                    if (oldContent.getId().equals(newContent.getId())) {
+                        // Vérifier si le responsable a changé
+                        boolean responsableChanged = !oldContent.getResponsable().getId()
+                            .equals(newContent.getResponsable().getId());
+                        return responsableChanged;
+                    }
+                }
+            }
+        }
+        // Si on n'a pas trouvé la tâche dans les anciens sprints, c'est une nouvelle tâche
+        return true;
     }
 
     @Override
@@ -384,5 +512,80 @@ public class ProjetService implements ProjetServiceImpl {
 
         // Sauvegarder le projet mis à jour
         return projetRepository.save(projet);
+    }
+
+    @Override
+    public List<ProjetTechnoCount> getMostUsedTechnologies(int month, int year) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month - 1, 1, 0, 0, 0);
+        Date startDate = calendar.getTime();
+        calendar.add(Calendar.MONTH, 1);
+        Date endDate = calendar.getTime();
+
+        List<Projet> projets = projetRepository.findTechnologiesByDateRange(startDate, endDate);
+        Map<String, Long> technoCountMap = new HashMap<>();
+
+        for (Projet projet : projets) {
+            Technique technique = projet.getTechnique();
+            if (technique != null && technique.getTechnologies() != null) {
+                for (Technologie technologie : technique.getTechnologies()) {
+                    technoCountMap.put(technologie.getLabel(), technoCountMap.getOrDefault(technologie.getLabel(), 0L) + 1);
+                }
+            }
+        }
+
+        return technoCountMap.entrySet().stream()
+                .map(entry -> new ProjetTechnoCount(entry.getKey(), entry.getValue()))
+                .sorted((a, b) -> Long.compare(b.getCount(), a.getCount()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<SprintDetailDTO> getProjetSprints(String projetId, int page, int size) {
+        Projet projet = getProjetById(projetId);
+        
+        if (projet.getSprints() == null || projet.getSprints().isEmpty()) {
+            return new PageImpl<>(new ArrayList<>(), PageRequest.of(page, size), 0);
+        }
+
+        List<SprintDetailDTO> sprintDetails = projet.getSprints().stream()
+            // Filtrer pour ne garder que les sprints ayant au moins un SprintContent avec status 0
+            .filter(sprint -> sprint.getSprintContents() != null && 
+                sprint.getSprintContents().stream()
+                    .anyMatch(content -> content.getStatus() != null && 
+                             content.getStatus().getStatus() == 0))
+            .map(sprint -> {
+                SprintDetailDTO dto = new SprintDetailDTO();
+                dto.setId(sprint.getId());
+                dto.setTitre(sprint.getTitre());
+                dto.setDescription(sprint.getDescription());
+                // Ne garder que les SprintContents avec status 0
+                dto.setSprintContents(
+                    sprint.getSprintContents().stream()
+                        .filter(content -> content.getStatus() != null && 
+                                content.getStatus().getStatus() == 0)
+                        .collect(Collectors.toList())
+                );
+                dto.setMeetings(sprint.getMeetings());
+                dto.setDateDebut(sprint.getDateDebut());
+                dto.setDateFin(sprint.getDateFin());
+                dto.setDateCreation(sprint.getDateCreation());
+                dto.setDateMeeting(sprint.getDateMeeting());
+                
+                // Calcul des statistiques uniquement pour les SprintContents avec status 0
+                dto.setTotalUserStories(dto.getSprintContents().size());
+                dto.setCompletionPercentage(0.0); // Tous les SprintContents ont status 0, donc 0% complété
+                
+                return dto;
+            })
+            .collect(Collectors.toList());
+
+        // Pagination
+        Pageable pageable = PageRequest.of(page, size);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), sprintDetails.size());
+        List<SprintDetailDTO> pageContent = sprintDetails.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageable, sprintDetails.size());
     }
 }

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignation de Tâches Sprint Dev</title>
+</head>
+<body>
+    <h2>Bonjour <span th:text="${responsableName}"></span>,</h2>
+    
+    <p>Vous avez été assigné(e) aux tâches suivantes dans le(s) sprint(s) de développement :</p>
+    
+    <div th:each="sprintTasks : ${sprintTasksMap}">
+        <h3>Sprint : <span th:text="${sprintTasks.key}"></span></h3>
+        
+        <div th:each="task : ${sprintTasks.value}" style="margin: 20px; padding: 10px; border: 1px solid #ccc;">
+            <p><strong>Tâche :</strong> <span th:text="${task.titre}"></span></p>
+            <p><strong>Description :</strong> <span th:text="${task.description}"></span></p>
+            <p><strong>Date de début :</strong> <span th:text="${#dates.format(task.dateDebut, 'dd/MM/yyyy')}"></span></p>
+            <p><strong>Date de fin :</strong> <span th:text="${#dates.format(task.dateFin, 'dd/MM/yyyy')}"></span></p>
+        </div>
+    </div>
+    
+    <p>Cordialement,<br/>L'équipe Scrum</p>
+</body>
+</html> 

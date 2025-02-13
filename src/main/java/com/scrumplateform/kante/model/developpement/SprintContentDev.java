@@ -2,6 +2,7 @@ package com.scrumplateform.kante.model.developpement;
 
 import java.util.Date;
 
+import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.scrumplateform.kante.model.sprintCheck.SprintCheck;
@@ -10,6 +11,7 @@ import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 import lombok.Data;
 
 @Data
+@Getter
 @Document(collection = "sprintContentDev")
 public class SprintContentDev {
     private String id;
@@ -20,4 +22,5 @@ public class SprintContentDev {
     private Date dateFin;
     private int ordre;
     private SprintCheck status;
+    private int priorite;
 }

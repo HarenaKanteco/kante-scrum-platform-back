@@ -19,6 +19,7 @@ import com.scrumplateform.kante.model.technique.Technique;
 import com.scrumplateform.kante.model.userStory.UserStory;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 import com.scrumplateform.kante.model.lien.Lien;
+import com.scrumplateform.kante.dto.sprint.SprintDetailDTO;
 
 @Service
 public interface ProjetServiceImpl {
@@ -28,6 +29,7 @@ public interface ProjetServiceImpl {
     public List<ProjetProjection> getProjects(String scrumId, int etapeOrdre);
     public Page<ProjetProjection> getProjetsParMembreEquipe(String utilisateurId, String keyword, int step, int page, int size);
     public Projet updateSprintDevsInProject(String projetId, List<SprintDev> updatedSprintDevs) throws ProjectNotFoundException;
+    public Projet updateSprintDevInDevTask(String projetId, List<SprintDev> updatedSprintDevs) throws ProjectNotFoundException;
     public Projet updateCdcTechniqueInProject(String projetId, CdcTechnique updatedCdcTechnique) throws ProjectNotFoundException;
     public Projet updateEquipeInProject(String projetId, List<Utilisateur> updatedEquipe) throws ProjectNotFoundException;
     public Projet updateSprintsInProject(String projetId, List<Sprint> updatedSprints) throws ProjectNotFoundException;
@@ -42,4 +44,6 @@ public interface ProjetServiceImpl {
     public Page<Projet> getPaginatedProjects(String scrumId, String keyword, int etapeOrdre, int page, int size);
     public Page<ProjetProjection> getPaginatedProjects(String scrumId, String keyword, int page, int size);
     public Projet updateLiensInProject(String projetId, List<Lien> updatedLiens) throws ProjectNotFoundException;
+    public List<ProjetTechnoCount> getMostUsedTechnologies(int month, int year);
+    public Page<SprintDetailDTO> getProjetSprints(String projetId, int page, int size);
 }
