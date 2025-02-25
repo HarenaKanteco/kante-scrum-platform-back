@@ -3,6 +3,8 @@ package com.scrumplateform.kante.controller.calendrier;
 import com.scrumplateform.kante.model.calendrier.Evenement;
 import com.scrumplateform.kante.service.calendrier.EventService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+    private static final Logger log = LoggerFactory.getLogger(EventController.class);
 
     @GetMapping
     public ResponseEntity<List<Evenement>> getAllEvents() {
@@ -21,8 +24,34 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<Evenement> createEvent(@RequestBody Evenement event) {
-        return ResponseEntity.ok(eventService.createEvent(event));
+    public ResponseEntity<Evenement> createEvent(@RequestBody(required = true) Evenement event) {
+        log.info("Données reçues du front-end : {}", event);
+        
+        // Validation des données
+        if (event == null) {
+            log.error("Les données de l'événement sont nulles");
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (event.getTitle() == null || event.getTitle().trim().isEmpty()) {
+            log.error("Le titre de l'événement est requis. Données reçues : {}", event);
+            return ResponseEntity.badRequest().build();
+        }
+        
+        if (event.getStart() == null || event.getEnd() == null) {
+            log.error("Les dates de début et de fin sont requises. Données reçues : {}", event);
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            log.info("Tentative de création de l'événement avec les données : {}", event);
+            Evenement savedEvent = eventService.createEvent(event);
+            log.info("Événement créé avec succès : {}", savedEvent);
+            return ResponseEntity.ok(savedEvent);
+        } catch (Exception e) {
+            log.error("Erreur lors de la création de l'événement : {}", e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/{id}")

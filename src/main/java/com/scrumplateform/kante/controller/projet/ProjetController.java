@@ -35,6 +35,7 @@ import com.scrumplateform.kante.service.utilisateur.UtilisateurServiceImpl;
 import com.scrumplateform.kante.model.lien.Lien;
 import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
 import com.scrumplateform.kante.dto.sprint.SprintDetailDTO;
+import com.scrumplateform.kante.model.sprintCheck.SprintDevCheckPercentage;
 
 @RestController
 @RequestMapping("/api/v1/projets")
@@ -475,6 +476,22 @@ public class ProjetController {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             response.error(null, "Une erreur est survenue lors de la récupération des détails des sprints : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{projetId}/sprint-dev-completion")
+    public ResponseEntity<Response> getSprintDevCompletion(@PathVariable("projetId") String projetId) {
+        Response response = new Response();
+        try {
+            SprintDevCheckPercentage completion = projetService.getPercentageOfCompletedTask(projetId);
+            response.success(completion, "Pourcentage de complétion des tâches récupéré avec succès");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors du calcul du pourcentage de complétion : " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

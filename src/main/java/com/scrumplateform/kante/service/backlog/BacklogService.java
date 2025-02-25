@@ -38,4 +38,19 @@ public class BacklogService {
                 .filter(item -> item.getEtat().equals(etat))
                 .collect(Collectors.toList());
     }
+
+    public BacklogItem updateBacklogItemEtat(String projetId, String backlogItemId, String nouvelEtat) {
+        Backlog backlog = backlogRepository.findByProjetId(projetId)
+                .orElseThrow(() -> new BacklogNotFoundException("Backlog non trouvé pour le projet ID: " + projetId));
+
+        BacklogItem itemToUpdate = backlog.getBacklogItems().stream()
+                .filter(item -> item.getId().equals(backlogItemId))
+                .findFirst()
+                .orElseThrow(() -> new BacklogNotFoundException("BacklogItem non trouvé avec l'ID: " + backlogItemId));
+
+        itemToUpdate.setEtat(nouvelEtat);
+        backlogRepository.save(backlog);
+        
+        return itemToUpdate;
+    }
 }

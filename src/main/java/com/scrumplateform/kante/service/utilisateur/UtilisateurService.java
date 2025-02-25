@@ -3,6 +3,7 @@ package com.scrumplateform.kante.service.utilisateur;
 import com.scrumplateform.kante.dto.account.LoginDTO;
 import com.scrumplateform.kante.exception.utilisateur.UserNotFoundException;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
+import com.scrumplateform.kante.model.utilisateur.UtilisateurEmail;
 import com.scrumplateform.kante.repository.utilisateur.UtilisateurRepository;
 import com.scrumplateform.kante.security.Role;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +40,16 @@ public class UtilisateurService implements UtilisateurServiceImpl {
         return utilisateurRepository.findById(utilisateurId)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé"));
     }
+
+        public  List<UtilisateurEmail> getAllUser(){
+        List<Utilisateur> listUsers = utilisateurRepository.findAll();
+        List<UtilisateurEmail> listEmail = new ArrayList<>();
+
+        for (Utilisateur user : listUsers){
+            listEmail.add(new UtilisateurEmail(user.getEmail()));
+        }
+        return listEmail;
+        }
 
     @Override
     public Utilisateur register(Utilisateur utilisateur) {

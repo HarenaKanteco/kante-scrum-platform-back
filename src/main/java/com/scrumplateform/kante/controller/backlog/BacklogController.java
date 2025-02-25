@@ -7,10 +7,7 @@ import com.scrumplateform.kante.service.backlog.BacklogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,6 +46,25 @@ public class BacklogController {
         try {
             List<BacklogItem> backlogItems = backlogService.findBacklogItemsByProjectIdAndEtat(projetId, etat);
             response.success(backlogItems, "Éléments du backlog récupérés avec succès");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (BacklogNotFoundException e) {
+            response.error(null, "Erreur : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{projetId}/items/{backlogItemId}/etat/{nouvelEtat}")
+    public ResponseEntity<Response> updateBacklogItemEtat(
+            @PathVariable String projetId,
+            @PathVariable String backlogItemId,
+            @PathVariable String nouvelEtat) {
+        Response response = new Response();
+        try {
+            BacklogItem updatedItem = backlogService.updateBacklogItemEtat(projetId, backlogItemId, nouvelEtat);
+            response.success(updatedItem, "État du BacklogItem mis à jour avec succès");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (BacklogNotFoundException e) {
             response.error(null, "Erreur : " + e.getMessage());

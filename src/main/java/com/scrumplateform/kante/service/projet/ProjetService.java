@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.scrumplateform.kante.model.developpement.SprintContentDev;
 import com.scrumplateform.kante.model.lien.Lien;
 import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
+import com.scrumplateform.kante.model.sprintCheck.SprintDevCheckPercentage;
 import com.scrumplateform.kante.model.technique.Technologie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -574,7 +575,7 @@ public class ProjetService implements ProjetServiceImpl {
                 
                 // Calcul des statistiques uniquement pour les SprintContents avec status 0
                 dto.setTotalUserStories(dto.getSprintContents().size());
-                dto.setCompletionPercentage(0.0); // Tous les SprintContents ont status 0, donc 0% complété
+                dto.setCompletionPercentage(0.0);
                 
                 return dto;
             })
@@ -587,5 +588,35 @@ public class ProjetService implements ProjetServiceImpl {
         List<SprintDetailDTO> pageContent = sprintDetails.subList(start, end);
 
         return new PageImpl<>(pageContent, pageable, sprintDetails.size());
+    }
+
+    @Override
+    public SprintDevCheckPercentage getPercentageOfCompletedTask(String projetId) {
+        // Récupérer le projet
+        Projet projet = projetRepository.findById(projetId)
+            .orElseThrow(() -> new ProjectNotFoundException("Projet non trouvé avec l'ID : " + projetId));
+
+        long totalTasks = 0;
+        long completedTasks = 0;
+
+        // Vérifier si le projet a des sprints de développement
+        if (projet.getSprintDevs() != null) {
+            for (SprintDev sprintDev : projet.getSprintDevs()) {
+                if (sprintDev.getSprintContentDevs() != null) {
+                    for (SprintContentDev content : sprintDev.getSprintContentDevs()) {
+                        totalTasks++;
+                        // Vérifier si la tâche est terminée (status = 10)
+                        if (content.getStatus() != null && content.getStatus().getStatus() == 10) {
+                            completedTasks++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Calculer le pourcentage
+        double percentage = totalTasks > 0 ? ((double) completedTasks / totalTasks) * 100 : 0;
+
+        return new SprintDevCheckPercentage(totalTasks, completedTasks, percentage);
     }
 }

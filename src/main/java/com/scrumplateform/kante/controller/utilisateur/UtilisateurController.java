@@ -2,6 +2,7 @@ package com.scrumplateform.kante.controller.utilisateur;
 
 import java.util.List;
 
+import com.scrumplateform.kante.model.utilisateur.UtilisateurEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,30 @@ public class UtilisateurController {
 
     @Autowired
     private UtilisateurService utilisateurService;
+
+    @GetMapping("/email")
+    public ResponseEntity<Response> getAllUserEmail(){
+        Response response = new Response();
+        try {
+            List<UtilisateurEmail> developers = utilisateurService.getAllUser();
+
+            if (developers.isEmpty()) {
+                response.error(null, "Aucun développeur trouvé avec le rôle supplémentaire spécifié : ");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            response.success(developers, "Liste des développeurs récupérée avec succès.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            // Handle case where role string is not a valid enum value
+            response.error(null, "Erreur : Rôle invalide spécifié - ");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la récupération des développeurs : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     // Méthode pour récupérer les utilisateurs avec le rôle "DEV" et un rôle supplémentaire
     @GetMapping("/developpeurs/{additionalRole}")

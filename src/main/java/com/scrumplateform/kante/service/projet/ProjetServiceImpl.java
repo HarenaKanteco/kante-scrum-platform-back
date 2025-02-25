@@ -3,6 +3,7 @@ package com.scrumplateform.kante.service.projet;
 import java.util.List;
 
 import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
+import com.scrumplateform.kante.model.sprintCheck.SprintDevCheckPercentage;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -46,4 +47,5 @@ public interface ProjetServiceImpl {
     public Projet updateLiensInProject(String projetId, List<Lien> updatedLiens) throws ProjectNotFoundException;
     public List<ProjetTechnoCount> getMostUsedTechnologies(int month, int year);
     public Page<SprintDetailDTO> getProjetSprints(String projetId, int page, int size);
+    public SprintDevCheckPercentage getPercentageOfCompletedTask(String projetId);
 }
