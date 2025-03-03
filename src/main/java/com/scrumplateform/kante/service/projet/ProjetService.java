@@ -168,7 +168,8 @@ public class ProjetService implements ProjetServiceImpl {
         for (SprintDev sprintDev : updatedSprintDevs) {
             if (sprintDev.getSprintContentDevs() != null) {
                 for (SprintContentDev content : sprintDev.getSprintContentDevs()) {
-                    if (content.getResponsable() != null) {
+                    // Vérifier si le responsable existe avant de traiter la notification
+                    if (content.getResponsable() != null && content.getResponsable().getId() != null) {
                         String userId = content.getResponsable().getId();
                         
                         // Vérifier si c'est une nouvelle tâche ou si le responsable a changé
@@ -276,10 +277,12 @@ public class ProjetService implements ProjetServiceImpl {
             if (oldSprint.getId().equals(sprintId) && oldSprint.getSprintContentDevs() != null) {
                 for (SprintContentDev oldContent : oldSprint.getSprintContentDevs()) {
                     if (oldContent.getId().equals(newContent.getId())) {
+                        // Vérifier si les deux contenus ont des responsables avant de comparer
+                        if (oldContent.getResponsable() == null || newContent.getResponsable() == null) {
+                            return oldContent.getResponsable() != newContent.getResponsable();
+                        }
                         // Vérifier si le responsable a changé
-                        boolean responsableChanged = !oldContent.getResponsable().getId()
-                            .equals(newContent.getResponsable().getId());
-                        return responsableChanged;
+                        return !oldContent.getResponsable().getId().equals(newContent.getResponsable().getId());
                     }
                 }
             }
