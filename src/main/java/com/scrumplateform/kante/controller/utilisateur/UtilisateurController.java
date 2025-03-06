@@ -74,4 +74,24 @@ public class UtilisateurController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping
+    public ResponseEntity<Response> getAllUsers(){
+        Response response = new Response();
+        try {
+
+            List<Utilisateur> developers = utilisateurService.getAllUsers();
+
+            if (developers.isEmpty()) {
+                response.error(null, "Aucun développeur trouvé");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            response.success(developers, "Liste des développeurs récupérée avec succès.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la récupération des développeurs : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -88,4 +88,12 @@ public class UtilisateurService implements UtilisateurServiceImpl {
 
         return utilisateur;
     }
+
+    @Override
+    public List<Utilisateur> getAllUsers() {
+        List<Utilisateur> all = utilisateurRepository.findAll();
+        if (!all.isEmpty())
+            return all;
+        return null;
+    }
 }

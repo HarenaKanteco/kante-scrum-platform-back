@@ -1,5 +1,6 @@
 package com.scrumplateform.kante.service.projet;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
@@ -48,4 +49,5 @@ public interface ProjetServiceImpl {
     public List<ProjetTechnoCount> getMostUsedTechnologies(int month, int year);
     public Page<SprintDetailDTO> getProjetSprints(String projetId, int page, int size);
     public SprintDevCheckPercentage getPercentageOfCompletedTask(String projetId);
+    public byte[] exportTachesDevParMois(String userId, int month, int year) throws IOException;
 }

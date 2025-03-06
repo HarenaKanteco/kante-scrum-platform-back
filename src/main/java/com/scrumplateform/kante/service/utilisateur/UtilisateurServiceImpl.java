@@ -15,4 +15,5 @@ public interface UtilisateurServiceImpl {
     public Utilisateur register(Utilisateur utilisateur);
     public Utilisateur login(LoginDTO loginDTO);
     public Utilisateur authenticate(LoginDTO loginDTO) throws Exception;
+    public List<Utilisateur> getAllUsers();
 }

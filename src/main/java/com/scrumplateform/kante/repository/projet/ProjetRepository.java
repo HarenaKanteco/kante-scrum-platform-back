@@ -37,4 +37,7 @@ public interface ProjetRepository extends MongoRepository<Projet, String> {
     @Query(value = "{ 'dateCreation': { $gte: ?0, $lt: ?1 } }", 
            fields = "{ 'technique.technologies.label': 1 }")
     List<Projet> findTechnologiesByDateRange(Date startDate, Date endDate);
+
+    @Query("{ 'equipe.id' : ?0 }")
+    List<Projet> findByEq(String userId);
 }

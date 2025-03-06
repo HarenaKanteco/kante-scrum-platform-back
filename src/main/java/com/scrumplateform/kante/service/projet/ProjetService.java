@@ -1,11 +1,15 @@
 package com.scrumplateform.kante.service.projet;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import com.scrumplateform.kante.model.developpement.SprintContentDev;
 import com.scrumplateform.kante.model.lien.Lien;
 import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
+import com.scrumplateform.kante.model.sprintCheck.SprintCheck;
 import com.scrumplateform.kante.model.sprintCheck.SprintDevCheckPercentage;
 import com.scrumplateform.kante.model.technique.Technologie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +50,17 @@ import com.scrumplateform.kante.service.notification.NotificationServiceImpl;
 import com.scrumplateform.kante.dto.sprint.SprintDetailDTO;
 import com.scrumplateform.kante.service.email.EmailService;
 import org.thymeleaf.context.Context;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 @Service
 public class ProjetService implements ProjetServiceImpl {
@@ -621,5 +636,150 @@ public class ProjetService implements ProjetServiceImpl {
         double percentage = totalTasks > 0 ? ((double) completedTasks / totalTasks) * 100 : 0;
 
         return new SprintDevCheckPercentage(totalTasks, completedTasks, percentage);
+    }
+
+    @Override
+    public byte[] exportTachesDevParMois(String userId, int month, int year) throws IOException {
+        // Créer un nouveau classeur Excel
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Tâches");
+            
+            // Récupérer l'utilisateur
+            Utilisateur developpeur = utilisateurRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Développeur non trouvé"));
+
+            // Définir la période
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month - 1, 1, 0, 0, 0);
+            Date startDate = calendar.getTime();
+            calendar.add(Calendar.MONTH, 1);
+            Date endDate = calendar.getTime();
+
+            // Récupérer tous les projets où le développeur est dans l'équipe
+            List<Projet> projets = projetRepository.findByEq(userId);
+
+            // Style pour le titre
+            CellStyle titleStyle = workbook.createCellStyle();
+            Font titleFont = workbook.createFont();
+            titleFont.setBold(true);
+            titleFont.setFontHeightInPoints((short) 14);
+            titleStyle.setFont(titleFont);
+            titleStyle.setAlignment(HorizontalAlignment.CENTER);
+
+            // Style pour les en-têtes
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            // Créer l'en-tête du rapport avec le nom du responsable
+            Row titleRow = sheet.createRow(0);
+            Cell titleCell = titleRow.createCell(0);
+            titleCell.setCellValue("Rapport des tâches de " + 
+                developpeur.getEmail().split("@")[0] +
+                " - " + new SimpleDateFormat("MMMM yyyy", Locale.FRENCH).format(startDate));
+            titleCell.setCellStyle(titleStyle);
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 4));
+
+            // Créer les en-têtes des colonnes
+            Row headerRow = sheet.createRow(2);
+            String[] headers = {"Projet", "Sprint", "Tâche", "Période", "Statut"};
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            int rowNum = 3;
+            for (Projet projet : projets) {
+                if (projet.getSprintDevs() != null) {
+                    for (SprintDev sprint : projet.getSprintDevs()) {
+                        if (sprint.getSprintContentDevs() != null) {
+                            for (SprintContentDev tache : sprint.getSprintContentDevs()) {
+                                // Vérifier si la tâche appartient au développeur et à la période
+                                if (tache.getResponsable() != null && 
+                                    tache.getResponsable().getId().equals(userId) &&
+                                    isDateInPeriod(tache.getDateDebut(), startDate, endDate)) {
+                                    
+                                    Row row = sheet.createRow(rowNum++);
+                                    
+                                    // Projet
+                                    row.createCell(0).setCellValue(projet.getTitre());
+                                    
+                                    // Sprint
+                                    row.createCell(1).setCellValue(sprint.getTitre());
+                                    
+                                    // Tâche
+                                    row.createCell(2).setCellValue(tache.getTitre());
+                                    
+                                    // Période
+                                    String periode = formatDatePeriod(tache.getDateDebut(), tache.getDateFin());
+                                    row.createCell(3).setCellValue(periode);
+                                    
+                                    // Statut avec style
+                                    Cell statusCell = row.createCell(4);
+                                    statusCell.setCellValue(getStatusLabel(tache.getStatus()));
+                                    applyStatusStyle(statusCell, tache.getStatus());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Ajuster la largeur des colonnes
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Convertir le workbook en bytes
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                workbook.write(outputStream);
+                return outputStream.toByteArray();
+            }
+        } catch (UserNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean isDateInPeriod(Date date, Date startDate, Date endDate) {
+        return date != null && !date.before(startDate) && date.before(endDate);
+    }
+
+    private String formatDatePeriod(Date dateDebut, Date dateFin) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        if (dateDebut == null && dateFin == null) {
+            return "Non définie";
+        }
+        return (dateDebut != null ? sdf.format(dateDebut) : "?") + 
+               " - " + 
+               (dateFin != null ? sdf.format(dateFin) : "?");
+    }
+
+    private String getStatusLabel(SprintCheck status) {
+        if (status == null) return "Pas commencé";
+        
+        switch (status.getStatus()) {
+            case 0: return "En cours";
+            case 10: return "Terminé";
+            default: return "Statut inconnu";
+        }
+    }
+
+    private void applyStatusStyle(Cell cell, SprintCheck status) {
+        CellStyle style = cell.getSheet().getWorkbook().createCellStyle();
+        
+        if (status == null || status.getStatus() == 0) {
+            // Style pour "Pas commencé" - Fond bleu clair
+            style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+        } else if (status.getStatus() == 10) {
+            // Style pour "Terminé" - Fond vert clair
+            style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        }
+        
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        cell.setCellStyle(style);
     }
 }
