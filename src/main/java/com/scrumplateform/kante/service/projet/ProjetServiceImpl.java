@@ -50,4 +50,5 @@ public interface ProjetServiceImpl {
     public Page<SprintDetailDTO> getProjetSprints(String projetId, int page, int size);
     public SprintDevCheckPercentage getPercentageOfCompletedTask(String projetId);
     public byte[] exportTachesDevParMois(String userId, int month, int year) throws IOException;
+    public byte[] exportCdcTechniquePdf(String projetId) throws IOException;
 }

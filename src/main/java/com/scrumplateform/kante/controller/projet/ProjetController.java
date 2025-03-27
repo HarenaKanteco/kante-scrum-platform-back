@@ -36,6 +36,8 @@ import com.scrumplateform.kante.model.lien.Lien;
 import com.scrumplateform.kante.model.projet.ProjetTechnoCount;
 import com.scrumplateform.kante.dto.sprint.SprintDetailDTO;
 import com.scrumplateform.kante.model.sprintCheck.SprintDevCheckPercentage;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ContentDisposition;
 
 @RestController
 @RequestMapping("/api/v1/projets")
@@ -511,6 +513,25 @@ public class ProjetController {
                 .build());
 
         return new ResponseEntity<>(excelContent, headers, HttpStatus.OK);
-}
+    }
+
+    @GetMapping("/{projetId}/cdc-technique/export-pdf")
+    public ResponseEntity<byte[]> exportCdcTechniquePdf(@PathVariable String projetId) throws IOException {
+        try {
+            byte[] pdfContent = projetService.exportCdcTechniquePdf(projetId);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition.builder("attachment")
+                    .filename("cdc_technique.pdf")
+                    .build());
+
+            return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
+        } catch (ProjectNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
 

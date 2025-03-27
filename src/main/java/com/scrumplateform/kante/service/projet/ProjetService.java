@@ -5,6 +5,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 import com.scrumplateform.kante.model.developpement.SprintContentDev;
 import com.scrumplateform.kante.model.lien.Lien;
@@ -61,6 +64,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import com.itextpdf.html2pdf.HtmlConverter;
 
 @Service
 public class ProjetService implements ProjetServiceImpl {
@@ -685,7 +689,7 @@ public class ProjetService implements ProjetServiceImpl {
 
             // Créer les en-têtes des colonnes
             Row headerRow = sheet.createRow(2);
-            String[] headers = {"Projet", "Sprint", "Tâche", "Période", "Statut"};
+            String[] headers = {"Projet", "Sprint", "Tâche", "Période","période d'achèvement", "Statut"};
             for (int i = 0; i < headers.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headers[i]);
@@ -717,9 +721,16 @@ public class ProjetService implements ProjetServiceImpl {
                                     // Période
                                     String periode = formatDatePeriod(tache.getDateDebut(), tache.getDateFin());
                                     row.createCell(3).setCellValue(periode);
+
+                                    // Période d'achèvement
+                                    String periodeAchevement = calculatePeriodDifference(
+                                        tache.getDateDebut(), 
+                                        tache.getStatus() != null ? tache.getStatus().getCheckDate() : null
+                                    );
+                                    row.createCell(4).setCellValue(periodeAchevement);
                                     
                                     // Statut avec style
-                                    Cell statusCell = row.createCell(4);
+                                    Cell statusCell = row.createCell(5);
                                     statusCell.setCellValue(getStatusLabel(tache.getStatus()));
                                     applyStatusStyle(statusCell, tache.getStatus());
                                 }
@@ -759,7 +770,7 @@ public class ProjetService implements ProjetServiceImpl {
     }
 
     private String getStatusLabel(SprintCheck status) {
-        if (status == null) return "Pas commencé";
+        if (status == null) return "En cours";
         
         switch (status.getStatus()) {
             case 0: return "En cours";
@@ -781,5 +792,103 @@ public class ProjetService implements ProjetServiceImpl {
         
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         cell.setCellStyle(style);
+    }
+
+    private String calculatePeriodDifference(Date startDate, LocalDateTime checkDateTime) {
+        if (startDate == null || checkDateTime == null) {
+            return "N/A";
+        }
+
+        // Convertir Date en LocalDateTime
+        LocalDateTime startDateTime = startDate.toInstant()
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime();
+
+        // Calculer la différence entre les LocalDateTime
+        long diffInHours = ChronoUnit.HOURS.between(startDateTime, checkDateTime);
+        long diffInDays = ChronoUnit.DAYS.between(startDateTime, checkDateTime);
+
+        if (diffInDays > 0) {
+            if (diffInDays == 1)
+                return "1 jour";
+            return diffInDays + " jours";
+        } else {
+            if (diffInHours <= 1)
+                return "1 heure";
+            return diffInHours + " heures";
+        }
+    }
+
+    @Override
+    public byte[] exportCdcTechniquePdf(String projetId) throws IOException {
+        // Récupérer le projet
+        Projet projet = getProjetById(projetId);
+        if (projet == null || projet.getCdcTechnique() == null) {
+            throw new ProjectNotFoundException("Projet ou CDC technique non trouvé");
+        }
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            // Créer le template HTML avec le style
+            String htmlContent = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            margin: 40px;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 30px;
+                        }
+                        .logo {
+                            max-width: 150px;
+                            margin-bottom: 20px;
+                        }
+                        h1 {
+                            color: #40D9D9;
+                            margin-bottom: 20px;
+                        }
+                        .content {
+                            margin-top: 20px;
+                        }
+                        .footer {
+                            margin-top: 30px;
+                            text-align: center;
+                            font-size: 12px;
+                            color: #666;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Cahier des Charges Technique</h1>
+                        <h2>%s</h2>
+                    </div>
+                    <div class="content">
+                        %s
+                    </div>
+                    <div class="footer">
+                        <p>© %d KanteCo. Tous droits réservés.</p>
+                    </div>
+                </body>
+                </html>
+                """.formatted(
+                    projet.getTitre(),
+                    projet.getCdcTechnique().getContenu(),
+                    java.time.Year.now().getValue()
+                );
+
+            // Convertir HTML en PDF
+            HtmlConverter.convertToPdf(htmlContent, baos);
+
+            return baos.toByteArray();
+        } catch (Exception e) {
+            throw new IOException("Erreur lors de la génération du PDF: " + e.getMessage());
+        }
     }
 }

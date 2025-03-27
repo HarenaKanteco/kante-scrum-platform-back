@@ -1,6 +1,6 @@
 package com.scrumplateform.kante.service.calendrier;
 
-import com.scrumplateform.kante.model.calendrier.Evenement;;
+import com.scrumplateform.kante.model.calendrier.Evenement;
 import com.scrumplateform.kante.repository.calendrier.EventRepository;
 import com.scrumplateform.kante.service.email.EmailService;
 import lombok.RequiredArgsConstructor;
