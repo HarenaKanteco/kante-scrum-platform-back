@@ -2,9 +2,12 @@ package com.scrumplateform.kante.service.utilisateur;
 
 import com.scrumplateform.kante.dto.account.LoginDTO;
 import com.scrumplateform.kante.exception.utilisateur.UserNotFoundException;
+import com.scrumplateform.kante.model.technique.Technologie;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 import com.scrumplateform.kante.model.utilisateur.UtilisateurEmail;
 import com.scrumplateform.kante.repository.utilisateur.UtilisateurRepository;
+import com.scrumplateform.kante.repository.projet.ProjetRepository;
+import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.security.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +25,72 @@ public class UtilisateurService implements UtilisateurServiceImpl {
     private UtilisateurRepository utilisateurRepository;
 
     @Autowired
+    private ProjetRepository projetRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public List<Utilisateur> getDevelopersWithSpecificRole(Role role) {
+    public List<Utilisateur> getDevelopersWithSpecificRole(Role role, String projetId) {
         // Vérifiez que le rôle n'est pas SCRUM
         if (role == Role.SCRUM) {
             throw new IllegalArgumentException("Le rôle 'SCRUM' n'est pas autorisé.");
         }
 
         // Récupérez les utilisateurs ayant le rôle 'DEV' et le rôle spécifique
-        return utilisateurRepository.findByRolesContainingBoth(Role.DEV, role);
+        List<Utilisateur> developers = utilisateurRepository.findByRolesContainingBoth(Role.DEV, role);
+        
+        // Si un ID de projet est fourni, triez les développeurs par technologies similaires
+        if (projetId != null && !projetId.isEmpty()) {
+            Optional<Projet> projetOptional = projetRepository.findById(projetId);
+            
+            if (projetOptional.isPresent()) {
+                Projet projet = projetOptional.get();
+                
+                // Récupérer les technologies du projet
+                List<Technologie> projetTechnologies;
+                if (projet.getTechnique() != null) {
+                    projetTechnologies = projet.getTechnique().getTechnologies();
+                } else {
+                    projetTechnologies = null;
+                }
+
+                if (projetTechnologies != null && !projetTechnologies.isEmpty()) {
+                    // Trier les développeurs en fonction du nombre de technologies communes
+                    developers.sort((dev1, dev2) -> {
+                        int matchCount1 = countMatchingTechnologies(dev1.getTechnologies(), projetTechnologies);
+                        int matchCount2 = countMatchingTechnologies(dev2.getTechnologies(), projetTechnologies);
+                        return Integer.compare(matchCount2, matchCount1); // Ordre décroissant
+                    });
+                }
+            }
+        }
+
+        return developers;
+    }
+
+    /**
+     * Compte le nombre de technologies communes entre deux listes
+     * @param devTechnologies Liste des technologies du développeur
+     * @param projetTechnologies Liste des technologies du projet
+     * @return Le nombre de technologies communes
+     */
+    private int countMatchingTechnologies(List<Technologie> devTechnologies, List<Technologie> projetTechnologies) {
+        if (devTechnologies == null || projetTechnologies == null) {
+            return 0;
+        }
+        
+        int count = 0;
+        for (Technologie devTech : devTechnologies) {
+            for (Technologie projTech : projetTechnologies) {
+                if (devTech.getId().equals(projTech.getId()) || 
+                    (devTech.getLabel() != null && devTech.getLabel().equalsIgnoreCase(projTech.getLabel()))) {
+                    count++;
+                    break;
+                }
+            }
+        }
+        return count;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.scrumplateform.kante.model.utilisateur;
 
+import com.scrumplateform.kante.model.technique.Technologie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import com.scrumplateform.kante.security.Role;
 
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,6 +27,8 @@ public class Utilisateur {
     private String motDePasse;
 
     private EnumSet<Role> roles;
+
+    private List<Technologie> technologies;
 
     private String currentRole;
 

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scrumplateform.kante.http.response.Response;
@@ -49,14 +50,16 @@ public class UtilisateurController {
 
     // Méthode pour récupérer les utilisateurs avec le rôle "DEV" et un rôle supplémentaire
     @GetMapping("/developpeurs/{additionalRole}")
-    public ResponseEntity<Response> getDevelopersWithSpecificRole(@PathVariable("additionalRole") String additionalRole) {
+    public ResponseEntity<Response> getDevelopersWithSpecificRole(
+            @PathVariable("additionalRole") String additionalRole,
+            @RequestParam(value = "projetId", required = false) String projetId) {
         Response response = new Response();
         try {
             // Parse the string to a Role enum
             Role additionalRoleEnum = Role.valueOf(additionalRole.toUpperCase());
 
-            // Call the service method with the Role enum
-            List<Utilisateur> developers = utilisateurService.getDevelopersWithSpecificRole(additionalRoleEnum);
+            // Call the service method with the Role enum and projetId
+            List<Utilisateur> developers = utilisateurService.getDevelopersWithSpecificRole(additionalRoleEnum, projetId);
             
             if (developers.isEmpty()) {
                 response.error(null, "Aucun développeur trouvé avec le rôle supplémentaire spécifié : " + additionalRole);

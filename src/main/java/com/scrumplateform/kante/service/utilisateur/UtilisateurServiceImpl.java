@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UtilisateurServiceImpl {
-    public List<Utilisateur> getDevelopersWithSpecificRole(Role role);
+
+    public List<Utilisateur> getDevelopersWithSpecificRole(Role role, String projetId);
+
     public Utilisateur getUtilisateurById(String utilisateurId);
     public Utilisateur register(Utilisateur utilisateur);
     public Utilisateur login(LoginDTO loginDTO);

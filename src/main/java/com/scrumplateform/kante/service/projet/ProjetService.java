@@ -465,7 +465,7 @@ public class ProjetService implements ProjetServiceImpl {
                 .filter(us -> us.getId().equals(userStoryId))
                 .findFirst();
     
-        if (!userStoryOptional.isPresent()) {
+        if (userStoryOptional.isEmpty()) {
             throw new UserStoryNotFoundException("User story avec l'ID " + userStoryId + " non trouvée dans le projet.");
         }
     
