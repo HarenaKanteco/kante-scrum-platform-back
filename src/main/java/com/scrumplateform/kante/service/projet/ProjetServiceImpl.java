@@ -22,6 +22,7 @@ import com.scrumplateform.kante.model.userStory.UserStory;
 import com.scrumplateform.kante.model.utilisateur.Utilisateur;
 import com.scrumplateform.kante.model.lien.Lien;
 import com.scrumplateform.kante.dto.sprint.SprintDetailDTO;
+import com.scrumplateform.kante.dto.projet.ProjetSimpleDTO;
 
 @Service
 public interface ProjetServiceImpl {
@@ -51,4 +52,5 @@ public interface ProjetServiceImpl {
     public SprintDevCheckPercentage getPercentageOfCompletedTask(String projetId);
     public byte[] exportTachesDevParMois(String userId, int month, int year) throws IOException;
     public byte[] exportCdcTechniquePdf(String projetId) throws IOException;
+    public List<ProjetSimpleDTO> getAllProjetsSimple();
 }

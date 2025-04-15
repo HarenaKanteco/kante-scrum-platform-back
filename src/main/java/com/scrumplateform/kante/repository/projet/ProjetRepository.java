@@ -3,6 +3,7 @@ package com.scrumplateform.kante.repository.projet;
 import java.util.Date;
 import java.util.List;
 
+import com.scrumplateform.kante.dto.projet.ProjetSimpleDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,4 +41,11 @@ public interface ProjetRepository extends MongoRepository<Projet, String> {
 
     @Query("{ 'equipe.id' : ?0 }")
     List<Projet> findByEq(String userId);
+
+    @Query(value = "{ }", 
+           fields = "{ 'id': 1, 'titre': 1, 'client.logo': 1 }")
+    List<ProjetSimpleDTO> findAllProjectionsSimple();
+
+    @Query(value = "{}", fields = "{ 'id': 1, 'titre': 1, 'client': 1 }")
+    List<Projet> findAllProjetsSimple();
 }

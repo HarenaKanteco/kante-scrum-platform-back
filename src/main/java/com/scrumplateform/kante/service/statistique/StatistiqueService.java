@@ -17,6 +17,7 @@ import com.scrumplateform.kante.model.developpement.SprintDev;
 import com.scrumplateform.kante.model.projet.Projet;
 import com.scrumplateform.kante.model.sprintCheck.SprintCheck;
 import com.scrumplateform.kante.model.statistique.StatistiqueScrum;
+import com.scrumplateform.kante.model.statistique.TacheRepartitionDTO;
 import com.scrumplateform.kante.service.projet.ProjetService;
 
 @Service
@@ -252,6 +253,46 @@ public class StatistiqueService implements StatistiqueServiceImpl {
         stats.put("nombreTachesCompletes", nombreTachesCompletes);
 
         return stats;
+    }
+
+    @Override
+    public List<TacheRepartitionDTO> getRepartitionTaches(String projetId) {
+        Projet projet = projetService.getProjetById(projetId);
+        Map<String, Long> tachesParDev = new HashMap<>();
+        long totalTaches = 0;
+
+        // Parcourir tous les sprints de développement
+        if (projet.getSprintDevs() != null) {
+            for (SprintDev sprint : projet.getSprintDevs()) {
+                if (sprint.getSprintContentDevs() != null) {
+                    for (SprintContentDev tache : sprint.getSprintContentDevs()) {
+                        if (tache.getResponsable() != null) {
+                            String email = tache.getResponsable().getEmail();
+                            tachesParDev.merge(email, 1L, Long::sum);
+                            totalTaches++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Calculer les pourcentages
+        List<TacheRepartitionDTO> repartition = new ArrayList<>();
+        if (totalTaches > 0) {
+            for (Map.Entry<String, Long> entry : tachesParDev.entrySet()) {
+                double pourcentage = (entry.getValue() * 100.0) / totalTaches;
+                repartition.add(new TacheRepartitionDTO(
+                    entry.getKey(),
+                    entry.getValue(),
+                    Math.round(pourcentage * 10.0) / 10.0 // Arrondir à 1 décimale
+                ));
+            }
+        }
+
+        // Trier par pourcentage décroissant
+        repartition.sort((a, b) -> b.getPourcentage().compareTo(a.getPourcentage()));
+        
+        return repartition;
     }
     
 }

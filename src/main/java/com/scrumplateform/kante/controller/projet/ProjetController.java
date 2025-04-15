@@ -38,6 +38,7 @@ import com.scrumplateform.kante.dto.sprint.SprintDetailDTO;
 import com.scrumplateform.kante.model.sprintCheck.SprintDevCheckPercentage;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ContentDisposition;
+import com.scrumplateform.kante.dto.projet.ProjetSimpleDTO;
 
 @RestController
 @RequestMapping("/api/v1/projets")
@@ -531,6 +532,19 @@ public class ProjetController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/simple")
+    public ResponseEntity<Response> getAllProjetsSimple() {
+        Response response = new Response();
+        try {
+            List<ProjetSimpleDTO> projets = projetService.getAllProjetsSimple();
+            response.success(projets, "Liste des projets récupérée avec succès");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.error(null, "Une erreur est survenue lors de la récupération des projets : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

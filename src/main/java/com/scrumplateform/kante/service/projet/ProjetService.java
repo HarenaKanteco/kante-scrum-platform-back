@@ -65,6 +65,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import com.itextpdf.html2pdf.HtmlConverter;
+import com.scrumplateform.kante.dto.projet.ProjetSimpleDTO;
 
 @Service
 public class ProjetService implements ProjetServiceImpl {
@@ -890,5 +891,24 @@ public class ProjetService implements ProjetServiceImpl {
         } catch (Exception e) {
             throw new IOException("Erreur lors de la génération du PDF: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<ProjetSimpleDTO> getAllProjetsSimple() {
+        List<Projet> projetsSimples = projetRepository.findAllProjetsSimple();
+        
+        return projetsSimples.stream()
+            .map(projet -> {
+                ProjetSimpleDTO dto = new ProjetSimpleDTO();
+                dto.setId(projet.getId());
+                dto.setTitre(projet.getTitre());
+                
+                if (projet.getClient() != null) {
+                    dto.setClientLogo(projet.getClient().getLogo());
+                }
+                
+                return dto;
+            })
+            .collect(Collectors.toList());
     }
 }

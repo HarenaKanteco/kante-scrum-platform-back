@@ -2,6 +2,7 @@ package com.scrumplateform.kante.controller.statistique;
 
 import com.scrumplateform.kante.http.response.Response;
 import com.scrumplateform.kante.model.statistique.StatistiqueScrum;
+import com.scrumplateform.kante.model.statistique.TacheRepartitionDTO;
 import com.scrumplateform.kante.service.statistique.StatistiqueServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -86,6 +88,20 @@ public class StatistiqueProjetController {
         } catch (Exception e) {
             e.printStackTrace();
             response.error(null, "Erreur lors de la récupération des statistiques : " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{projetId}/repartition-taches")
+    public ResponseEntity<Response> getRepartitionTaches(@PathVariable String projetId) {
+        Response response = new Response();
+        try {
+            List<TacheRepartitionDTO> repartition = statistiqueService.getRepartitionTaches(projetId);
+            response.success(repartition, "Répartition des tâches récupérée avec succès.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.error(null, "Erreur lors de la récupération de la répartition des tâches : " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
