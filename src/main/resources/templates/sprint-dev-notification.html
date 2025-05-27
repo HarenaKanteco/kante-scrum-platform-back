@@ -14,7 +14,6 @@
         
         <div th:each="task : ${sprintTasks.value}" style="margin: 20px; padding: 10px; border: 1px solid #ccc;">
             <p><strong>Tâche :</strong> <span th:text="${task.titre}"></span></p>
-            <p><strong>Description :</strong> <span th:text="${task.description}"></span></p>
             <p><strong>Date de début :</strong> <span th:text="${#dates.format(task.dateDebut, 'dd/MM/yyyy')}"></span></p>
             <p><strong>Date de fin :</strong> <span th:text="${#dates.format(task.dateFin, 'dd/MM/yyyy')}"></span></p>
         </div>

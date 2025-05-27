@@ -9,16 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.springframework.beans.factory.annotation.Value;
 
 @RestController
@@ -50,30 +44,12 @@ public class FileController {
     }
 
     @GetMapping("/uploads/{directory}/{subDirectory}/{filename:.+}")
-    public ResponseEntity<Resource> getFile(
+    public ResponseEntity<?> getFile(
             @PathVariable String directory,
             @PathVariable String subDirectory,
             @PathVariable String filename) {
-        try {
-            Path filePath = Paths.get(uploadDirectory, directory, subDirectory, filename);
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists()) {
-                String contentType = Files.probeContentType(filePath);
-                MediaType mediaType = contentType != null ?
-                        MediaType.parseMediaType(contentType) :
-                        MediaType.IMAGE_JPEG;
-
-                return ResponseEntity.ok()
-                        .contentType(mediaType)
-                        .header(HttpHeaders.CONTENT_DISPOSITION,
-                                "inline; filename=\"" + resource.getFilename() + "\"")
-                        .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
+                .header("Location", "https://res.cloudinary.com/doqpbbuov/" + directory + "/" + subDirectory + "/" + filename)
+                .build();
     }
 }
